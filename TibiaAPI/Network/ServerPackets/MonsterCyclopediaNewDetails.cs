@@ -15,21 +15,12 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         public override void ParseFromNetworkMessage(NetworkMessage message)
         {
             RaceId = message.ReadUInt16();
-
-            if (Client.VersionNumber < 11900000 && Client.VersionNumber > 11596424)
-            {
-                message.ReadBytes(3);
-            }
         }
 
         public override void AppendToNetworkMessage(NetworkMessage message)
         {
             message.Write((byte)ServerPacketType.MonsterCyclopediaNewDetails);
             message.Write(RaceId);
-            if (Client.VersionNumber < 11900000 && Client.VersionNumber > 11596424)
-            {
-                //message.Write(Unknown);
-            }
         }
     }
 }

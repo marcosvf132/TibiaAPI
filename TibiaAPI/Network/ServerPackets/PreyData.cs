@@ -61,8 +61,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                 case PreyDataState.Selection:
                     {
                         Preys.Capacity = message.ReadByte();
-                        for (var i = 0; i < Preys.Capacity; i++)
-                        {
+                        for (var i = 0; i < Preys.Capacity; i++) {
                             var name = message.ReadString();
                             var outfit = message.ReadCreatureOutfit();
                             Preys.Add((name, outfit));
@@ -76,8 +75,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                         BonusRarity = message.ReadByte();
 
                         Preys.Capacity = message.ReadByte();
-                        for (var i = 0; i < Preys.Capacity; i++)
-                        {
+                        for (var i = 0; i < Preys.Capacity; i++) {
                             var name = message.ReadString();
                             var outfit = message.ReadCreatureOutfit();
                             Preys.Add((name, outfit));
@@ -88,9 +86,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                     {
                         RaceIds.Capacity = message.ReadUInt16();
                         for (var i = 0; i < RaceIds.Capacity; ++i)
-                        {
                             RaceIds.Add(message.ReadUInt16());
-                        }
                     }
                     break;
                 case PreyDataState.WildcardSelection:
@@ -101,9 +97,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
                         RaceIds.Capacity = message.ReadUInt16();
                         for (var i = 0; i < RaceIds.Capacity; ++i)
-                        {
                             RaceIds.Add(message.ReadUInt16());
-                        }
                     }
                     break;
                 default:
@@ -111,18 +105,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                         throw new Exception($"[PreyData.ParseFromNetworkMessage] Unknown state: {State}");
                     }
             }
-            if (Client.VersionNumber >= 125110194)
-            {
-                TimeLeftUntilFreeListReroll = message.ReadUInt32();
-            }
-            else
-            {
-                TimeLeftUntilFreeListReroll = message.ReadUInt16();
-            }
-            if (Client.VersionNumber > 11606457)
-            {
-                Option = message.ReadByte(); // 0 = none, 1 = automatic reroll, 2 = locked
-            }
+            TimeLeftUntilFreeListReroll = message.ReadUInt32();
+            Option = message.ReadByte(); // 0 = none, 1 = automatic reroll, 2 = locked
         }
 
         public override void AppendToNetworkMessage(NetworkMessage message)
@@ -142,12 +126,9 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                 case PreyDataState.Active:
                     {
                         message.Write(Name);
-                        if (Outfit is OutfitInstance)
-                        {
+                        if (Outfit is OutfitInstance) {
                             message.Write((OutfitInstance)Outfit);
-                        }
-                        else
-                        {
+                        } else {
                             message.Write((ushort)0);
                             message.Write((ushort)Outfit.Id);
                         }
@@ -165,12 +146,9 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                         {
                             var prey = Preys[i];
                             message.Write(prey.Name);
-                            if (prey.Outfit is OutfitInstance)
-                            {
+                            if (prey.Outfit is OutfitInstance) {
                                 message.Write((OutfitInstance)prey.Outfit);
-                            }
-                            else
-                            {
+                            } else {
                                 message.Write((ushort)0);
                                 message.Write((ushort)prey.Outfit.Id);
                             }
@@ -189,12 +167,9 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                         {
                             var prey = Preys[i];
                             message.Write(prey.Name);
-                            if (prey.Outfit is OutfitInstance)
-                            {
+                            if (prey.Outfit is OutfitInstance) {
                                 message.Write((OutfitInstance)prey.Outfit);
-                            }
-                            else
-                            {
+                            } else {
                                 message.Write((ushort)0);
                                 message.Write((ushort)prey.Outfit.Id);
                             }
@@ -206,9 +181,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                         var count = Math.Min(RaceIds.Count, ushort.MaxValue);
                         message.Write((ushort)count);
                         for (var i = 0; i < count; ++i)
-                        {
                             message.Write(RaceIds[i]);
-                        }
                     }
                     break;
                 case PreyDataState.WildcardSelection:
@@ -220,9 +193,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                         var count = Math.Min(RaceIds.Count, ushort.MaxValue);
                         message.Write((ushort)count);
                         for (var i = 0; i < count; ++i)
-                        {
                             message.Write(RaceIds[i]);
-                        }
                     }
                     break;
                 default:
@@ -230,18 +201,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                         throw new Exception($"[PreyData.AppendToNetworkMessage] Unknown state: {State}");
                     }
             }
-            if (Client.VersionNumber >= 125110194)
-            {
-                message.Write(TimeLeftUntilFreeListReroll);
-            }
-            else
-            {
-                message.Write((ushort)TimeLeftUntilFreeListReroll);
-            }
-            if (Client.VersionNumber > 11606457)
-            {
-                message.Write(Option);
-            }
+            message.Write(TimeLeftUntilFreeListReroll);
+            message.Write(Option);
         }
     }
 }

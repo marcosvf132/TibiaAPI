@@ -13,7 +13,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         public List<ImbuementData> AvailableImbuements { get; } = new List<ImbuementData>();
         
         public ushort AppearanceTypeId { get; set; }
-
+		
         public ImbuingDialogRefresh(Client client)
         {
             Client = client;
@@ -25,32 +25,24 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             AppearanceTypeId = message.ReadUInt16();
 
             ExistingImbuements.Capacity = message.ReadByte();
-            for (var i = 0; i < ExistingImbuements.Capacity; i++)
-            {
-               if (message.ReadBool())
-               {
+            for (var i = 0; i < ExistingImbuements.Capacity; i++) {
+				var Imbue = message.ReadBool();
+				if (Imbue) {
                    var imbuementData = message.ReadImbuementData();
                    var remainingDurationInSeconds = message.ReadUInt32();
                    var clearingGoldCost = message.ReadUInt32();
-                   ExistingImbuements.Add(new ExistingImbuement(imbuementData,
-                                                                remainingDurationInSeconds,
-                                                                clearingGoldCost));
-               }
-               else
-               {
+                   ExistingImbuements.Add(new ExistingImbuement(imbuementData, remainingDurationInSeconds, clearingGoldCost));
+				} else {
                    ExistingImbuements.Add(new ExistingImbuement());
-               }
-            }
+								}
+			}
 
             AvailableImbuements.Capacity = message.ReadUInt16();
             for (var i = 0; i < AvailableImbuements.Capacity; i++)
-            {
                AvailableImbuements.Add(message.ReadImbuementData());
-            }
 
             AvailableAstralSources.Capacity = (int)message.ReadUInt32();
-            for (var i = 0; i < AvailableAstralSources.Capacity; i++)
-            {
+            for (var i = 0; i < AvailableAstralSources.Capacity; i++) {
                var astralId = message.ReadUInt16();
                var objectCount = message.ReadUInt16();
                AvailableAstralSources.Add(new AstralSource(astralId, objectCount));
@@ -64,15 +56,13 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
             var existingImbuementsCount = (byte)Math.Min(ExistingImbuements.Count, byte.MaxValue);
             message.Write(existingImbuementsCount);
-            for (var i = 0; i < existingImbuementsCount; ++i)
-            {
+            for (var i = 0; i < existingImbuementsCount; ++i) {
                var existingImbuement = ExistingImbuements[i];
                var hasData = existingImbuement.ImbuementData == null;
                message.Write(hasData);
                if (!hasData)
-               {
                    continue;
-               }
+			   
                message.Write(existingImbuement.ImbuementData);
                message.Write(existingImbuement.RemainingDurationInSeconds);
                message.Write(existingImbuement.ClearingGoldCost);
@@ -81,14 +71,11 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             var availableImbuementsCount = (ushort)Math.Min(AvailableImbuements.Count, ushort.MaxValue);
             message.Write(availableImbuementsCount);
             for (var i = 0; i < availableImbuementsCount; ++i)
-            {
                message.Write(AvailableImbuements[i]);
-            }
             
             var availableAstralSourcesCount = (uint)Math.Min(AvailableAstralSources.Count, uint.MaxValue);
             message.Write(availableAstralSourcesCount);
-            for (var i = 0; i < availableAstralSourcesCount; ++i)
-            {
+            for (var i = 0; i < availableAstralSourcesCount; ++i) {
                var astralSource = AvailableAstralSources[i];
                message.Write(astralSource.AppearanceTypeId);
                message.Write(astralSource.ObjectCount);

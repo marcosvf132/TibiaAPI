@@ -13,25 +13,18 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
         public override void AppendToNetworkMessage(NetworkMessage message)
         {
-            foreach (var (TilesToSkip, Objects, _) in Fields)
-            {
-                foreach (var obj in Objects)
-                {
+            foreach (var (TilesToSkip, Objects, _) in Fields) {
+                foreach (var obj in Objects) {
                     if (obj.Id == (int)CreatureInstanceType.UnknownCreature ||
                         obj.Id == (int)CreatureInstanceType.OutdatedCreature ||
-                        obj.Id == (int)CreatureInstanceType.Creature)
-                    {
+                        obj.Id == (int)CreatureInstanceType.Creature) {
                         var creature = Client.CreatureStorage.GetCreature(obj.Data);
                         if (creature == null)
-                        {
                             continue;
-                        }
 
                         message.Write((ushort)creature.InstanceType);
                         message.Write(creature, creature.InstanceType);
-                    }
-                    else
-                    {
+                    } else {
                         message.Write(obj);
                     }
                 }

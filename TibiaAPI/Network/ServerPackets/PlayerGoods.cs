@@ -21,8 +21,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         {
             Money = message.ReadUInt64();
             Goods.Capacity = message.ReadByte();
-            for (var i = 0; i < Goods.Capacity; ++i)
-            {
+            for (var i = 0; i < Goods.Capacity; ++i) {
                 var id = message.ReadUInt16();
                 var count = message.ReadByte();
                 Goods.Add((id, count));
@@ -35,8 +34,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             message.Write(Money);
             var count = Math.Min(Goods.Count, byte.MaxValue);
             message.Write((byte)count);
-            for (var i = 0; i < count; ++i)
-            {
+            for (var i = 0; i < count; ++i) {
                 var (Id, Count) = Goods[i];
                 message.Write(Id);
                 message.Write(Count);

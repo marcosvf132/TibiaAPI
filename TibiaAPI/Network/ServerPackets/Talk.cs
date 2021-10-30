@@ -31,10 +31,9 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         {
             StatementId = message.ReadUInt32();
             SpeakerName = message.ReadString();
-            if (Client.VersionNumber >= 125010109 && StatementId != 0)
-            {
+            if (StatementId != 0)
                 IsTraded = message.ReadBool();
-            }
+			
             SpeakerLevel = message.ReadUInt16();
             MessageMode = (MessageModeType)message.ReadByte();
             switch (MessageMode)
@@ -94,10 +93,9 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             message.Write((byte)ServerPacketType.Talk);
             message.Write(StatementId);
             message.Write(SpeakerName);
-            if (Client.VersionNumber >= 125010109 && StatementId != 0)
-            {
+            if (StatementId != 0)
                 message.Write(IsTraded);
-            }
+			
             message.Write(SpeakerLevel);
             message.Write((byte)MessageMode);
             switch (MessageMode)

@@ -1,5 +1,6 @@
 ﻿using OXGaming.TibiaAPI.Constants;
 using OXGaming.TibiaAPI.Utilities;
+using System.Collections.Generic;
 
 namespace OXGaming.TibiaAPI.Network.ServerPackets
 {

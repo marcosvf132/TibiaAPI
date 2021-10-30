@@ -2,25 +2,25 @@
 
 namespace OXGaming.TibiaAPI.Network.ServerPackets
 {
-    public class PlayerState : ServerPacket
+    public class LogoutSession : ServerPacket
     {
-        public uint State { get; set; }
+        public byte UnknownByte1 { get; set; }
 
-        public PlayerState(Client client)
+        public LogoutSession(Client client)
         {
             Client = client;
-            PacketType = ServerPacketType.PlayerState;
+            PacketType = ServerPacketType.LogoutSession;
         }
 
         public override void ParseFromNetworkMessage(NetworkMessage message)
         {
-            State = message.ReadUInt32();
+            UnknownByte1 = message.ReadByte();
         }
 
         public override void AppendToNetworkMessage(NetworkMessage message)
         {
-            message.Write((byte)ServerPacketType.PlayerState);
-            message.Write(State);
+            message.Write((byte)ServerPacketType.LogoutSession);
+            message.Write(UnknownByte1);
         }
     }
 }

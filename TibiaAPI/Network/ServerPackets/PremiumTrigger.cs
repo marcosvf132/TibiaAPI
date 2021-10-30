@@ -19,9 +19,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         {
             PremiumTriggers.Capacity = message.ReadByte();
             for (var i = 0; i < PremiumTriggers.Capacity; ++i)
-            {
                 PremiumTriggers.Add(message.ReadByte());
-            }
         }
 
         public override void AppendToNetworkMessage(NetworkMessage message)
@@ -30,9 +28,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             var count = Math.Min(PremiumTriggers.Count, byte.MaxValue);
             message.Write((byte)count);
             for (var i = 0; i < count; ++i)
-            {
                 message.Write(PremiumTriggers[i]);
-            }
         }
     }
 }

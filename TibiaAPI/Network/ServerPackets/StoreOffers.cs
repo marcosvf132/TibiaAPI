@@ -36,18 +36,12 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
             Collections.Capacity = message.ReadByte();
             for (var i = 0; i < Collections.Capacity; ++i)
-            {
                 Collections.Add(message.ReadString());
-            }
 
-            if (Client.VersionNumber >= 11900000)
-            {
-                DisplaySubCategory = message.ReadString();
-            }
+			DisplaySubCategory = message.ReadString();
 
             Offers.Capacity = message.ReadUInt16();
-            for (var i = 0; i < Offers.Capacity; ++i)
-            {
+            for (var i = 0; i < Offers.Capacity; ++i) {
                 var offer = new Offer
                 {
                     Name = message.ReadString(),
@@ -55,8 +49,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                 };
 
                 offer.Details.Capacity = message.ReadByte();
-                for (var j = 0; j < offer.Details.Capacity; ++j)
-                {
+                for (var j = 0; j < offer.Details.Capacity; ++j) {
                     var details = new OfferDetails
                     {
                         Id = message.ReadUInt32(),
@@ -64,27 +57,22 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                         Price = message.ReadUInt32()
                     };
 
-                    if (Client.VersionNumber >= 11900000)
-                    {
-                        details.IsConfirmedPrice = message.ReadBool();
-                    }
+                    details.IsConfirmedPrice = message.ReadBool();
 
                     details.IsDisabled = message.ReadBool();
-                    if (details.IsDisabled)
-                    {
+                    if (details.IsDisabled) {
                         details.DisabledReasons.Capacity = message.ReadByte();
-                        for (var x = 0; x < details.DisabledReasons.Capacity; ++x)
-                        {
+                        for (var x = 0; x < details.DisabledReasons.Capacity; ++x) {
                             var disabledReason = message.ReadString();
                             details.DisabledReasons.Add(disabledReason);
                         }
                     }
 
                     details.HighlightState = message.ReadByte();
-                    if (details.HighlightState == (int)StoreOfferHighlightState.Sale)
-                    {
-                        // This may actually be wrong, but since there aren't currently
-                        // any items on sale I can't confirm it.
+					
+                    // This may actually be wrong, but since there aren't currently
+                    // any items on sale I can't confirm it.
+                    if (details.HighlightState == (int)StoreOfferHighlightState.Sale) {
                         var saleValidUntilTimestamp = message.ReadUInt32();
                         var basePrice = message.ReadUInt32();
                     }
@@ -93,28 +81,19 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                 }
 
                 offer.DisplayType = message.ReadByte();
-                if (offer.DisplayType == 0) // image (.png)
-                {
+                if (offer.DisplayType == 0) { // image (.png)
                     offer.DisplayImage = message.ReadString();
-                }
-                else if (offer.DisplayType == 1) // mount id
-                {
+                } else if (offer.DisplayType == 1) { // mount id
                     offer.DisplayMountId = message.ReadUInt16();
-                }
-                else if (offer.DisplayType == 2) // outfit
-                {
+                } else if (offer.DisplayType == 2) { // outfit
                     offer.DisplayLooktype = message.ReadUInt16();
                     offer.DisplayColorHead = message.ReadByte();
                     offer.DisplayColorTorso = message.ReadByte();
                     offer.DisplayColorLegs = message.ReadByte();
                     offer.DisplayColorDetail = message.ReadByte();
-                }
-                else if (offer.DisplayType == 3) // item id
-                {
+                } else if (offer.DisplayType == 3) { // item id
                     offer.DisplayItemId = message.ReadUInt16();
-                }
-                else if (offer.DisplayType == 4) // male/female outfit
-                {
+                } else if (offer.DisplayType == 4) { // male/female outfit
                     offer.GenderToShow = message.ReadByte();
                     offer.DisplayFemaleLooktype = message.ReadUInt16();
                     offer.DisplayMaleLooktype = message.ReadUInt16();
@@ -131,36 +110,26 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                 offer.NeedsUserConfigurationBeforeBuying = message.ReadBool();
 
                 offer.Products.Capacity = message.ReadUInt16();
-                for (var j = 0; j < offer.Products.Capacity; ++j)
-                {
+                for (var j = 0; j < offer.Products.Capacity; ++j) {
                     var subOffer = new Offer
                     {
                         Name = message.ReadString(),
                         DisplayType = message.ReadByte()
                     };
 
-                    if (subOffer.DisplayType == 0) // image (.png)
-                    {
+                    if (subOffer.DisplayType == 0) { // image (.png)
                         subOffer.DisplayImage = message.ReadString();
-                    }
-                    else if (subOffer.DisplayType == 1) // mount id
-                    {
+                    } else if (subOffer.DisplayType == 1) { // mount id
                         subOffer.DisplayMountId = message.ReadUInt16();
-                    }
-                    else if (subOffer.DisplayType == 2) // outfit
-                    {
+                    } else if (subOffer.DisplayType == 2) { // outfit
                         subOffer.DisplayLooktype = message.ReadUInt16();
                         subOffer.DisplayColorHead = message.ReadByte();
                         subOffer.DisplayColorTorso = message.ReadByte();
                         subOffer.DisplayColorLegs = message.ReadByte();
                         subOffer.DisplayColorDetail = message.ReadByte();
-                    }
-                    else if (subOffer.DisplayType == 3) // item sprite
-                    {
+                    } else if (subOffer.DisplayType == 3) { // item sprite
                         subOffer.DisplayItemId = message.ReadUInt16();
-                    }
-                    else if (subOffer.DisplayType == 4) // male/female outfit
-                    {
+                    } else if (subOffer.DisplayType == 4) { // male/female outfit
                         subOffer.GenderToShow = message.ReadByte();
                         subOffer.DisplayFemaleLooktype = message.ReadUInt16();
                         subOffer.DisplayMaleLooktype = message.ReadUInt16();
@@ -175,28 +144,21 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             }
 
             if (CategoryName.Equals("Search", StringComparison.CurrentCultureIgnoreCase))
-            {
                 TooManySearchResults = message.ReadBool();
-            }
 
-            if (WindowType == 3) // Home
-            {
+            if (WindowType == 3) { // Home
                 Banners.Capacity = message.ReadByte();
-                for (var i = 0; i < Banners.Capacity; ++i)
-                {
+                for (var i = 0; i < Banners.Capacity; ++i) {
                     var banner = new Banner
                     {
                         Image = message.ReadString(),
                         Type = message.ReadByte()
                     };
 
-                    if (banner.Type == 2)
-                    {
+                    if (banner.Type == 2) {
                         banner.Category = message.ReadString();
                         banner.Collection = message.ReadString();
-                    }
-                    else if (banner.Type == 4)
-                    {
+                    } else if (banner.Type == 4) {
                         banner.OfferId = message.ReadUInt32();
                     }
 
@@ -217,71 +179,49 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             var count = Math.Min(Collections.Count, byte.MaxValue);
             message.Write((byte)count);
             for (var i = 0; i < count; ++i)
-            {
                 message.Write(Collections[i]);
-            }
 
-            if (Client.VersionNumber >= 11900000)
-            {
-                message.Write(DisplaySubCategory);
-            }
+            message.Write(DisplaySubCategory);
 
             count = Math.Min(Offers.Count, ushort.MaxValue);
             message.Write((ushort)count);
-            for (var i = 0; i < count; ++i)
-            {
+            for (var i = 0; i < count; ++i) {
                 var offer = Offers[i];
                 message.Write(offer.Name);
 
                 var detailCount = Math.Min(offer.Details.Count, byte.MaxValue);
                 message.Write((byte)detailCount);
-                for (var j = 0; j < detailCount; ++j)
-                {
+                for (var j = 0; j < detailCount; ++j) {
                     var details = offer.Details[j];
                     message.Write(details.Id);
                     message.Write(details.Amount);
                     message.Write(details.Price);
-                    if (Client.VersionNumber >= 11900000)
-                    {
-                        message.Write(details.IsConfirmedPrice);
-                    }
+                    message.Write(details.IsConfirmedPrice);
                     message.Write(details.IsDisabled);
-                    if (details.IsDisabled)
-                    {
+                    if (details.IsDisabled) {
                         var reasonCount = Math.Min(details.DisabledReasons.Count, byte.MaxValue);
                         message.Write((byte)reasonCount);
                         for (var x = 0; x < reasonCount; ++x)
-                        {
                             message.Write(details.DisabledReasons[x]);
-                        }
                     }
                     message.Write(details.HighlightState);
                 }
 
                 message.Write(offer.DisplayType);
-                if (offer.DisplayType == 0) // image (.png)
-                {
+                if (offer.DisplayType == 0) { // image (.png)
                     message.Write(offer.DisplayImage);
-                }
-                else if (offer.DisplayType == 1) // mount id
-                {
+                } else if (offer.DisplayType == 1) { // mount id
                     message.Write(offer.DisplayMountId);
-                }
-                else if (offer.DisplayType == 2) // outfit
-                {
+                } else if (offer.DisplayType == 2) { // outfit
 
                     message.Write(offer.DisplayLooktype);
                     message.Write(offer.DisplayColorHead);
                     message.Write(offer.DisplayColorTorso);
                     message.Write(offer.DisplayColorLegs);
                     message.Write(offer.DisplayColorDetail);
-                }
-                else if (offer.DisplayType == 3) // item id
-                {
+                } else if (offer.DisplayType == 3) { // item id
                     message.Write(offer.DisplayItemId);
-                }
-                else if (offer.DisplayType == 4) // male/female outfit
-                {
+                } else if (offer.DisplayType == 4) { // male/female outfit
                     message.Write(offer.GenderToShow);
                     message.Write(offer.DisplayFemaleLooktype);
                     message.Write(offer.DisplayMaleLooktype);
@@ -299,34 +239,24 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
                 var productCount = Math.Min(offer.Products.Count, ushort.MaxValue);
                 message.Write((ushort)productCount);
-                for (var j = 0; j < productCount; ++j)
-                {
+                for (var j = 0; j < productCount; ++j) {
                     var subOffer = offer.Products[j];
                     message.Write(subOffer.Name);
                     message.Write(subOffer.DisplayType);
-                    if (subOffer.DisplayType == 0) // image (.png)
-                    {
+                    if (subOffer.DisplayType == 0) { // image (.png)
                         message.Write(subOffer.DisplayImage);
-                    }
-                    else if (subOffer.DisplayType == 1) // mount id
-                    {
+                    } else if (subOffer.DisplayType == 1) { // mount id // mount id
                         message.Write(subOffer.DisplayMountId);
-                    }
-                    else if (subOffer.DisplayType == 2) // outfit
-                    {
+                    } else if (subOffer.DisplayType == 2) { // outfit
 
                         message.Write(subOffer.DisplayLooktype);
                         message.Write(subOffer.DisplayColorHead);
                         message.Write(subOffer.DisplayColorTorso);
                         message.Write(subOffer.DisplayColorLegs);
                         message.Write(subOffer.DisplayColorDetail);
-                    }
-                    else if (subOffer.DisplayType == 3) // item id
-                    {
+                    } else if (subOffer.DisplayType == 3) { // item id
                         message.Write(subOffer.DisplayItemId);
-                    }
-                    else if (subOffer.DisplayType == 4) // male/female outfit
-                    {
+                    } else if (subOffer.DisplayType == 4) { // male/female outfit
                         message.Write(subOffer.GenderToShow);
                         message.Write(subOffer.DisplayFemaleLooktype);
                         message.Write(subOffer.DisplayMaleLooktype);
@@ -339,26 +269,19 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             }
 
             if (CategoryName.Equals("Search", StringComparison.CurrentCultureIgnoreCase))
-            {
                 message.Write(TooManySearchResults);
-            }
 
-            if (WindowType == 3) // Home
-            {
+            if (WindowType == 3) { // Home
                 count = Math.Min(Banners.Count, byte.MaxValue);
                 message.Write((byte)count);
-                for (var i = 0; i < count; ++i)
-                {
+                for (var i = 0; i < count; ++i) {
                     var banner = Banners[i];
                     message.Write(banner.Image);
                     message.Write(banner.Type);
-                    if (banner.Type == 2)
-                    {
+                    if (banner.Type == 2) {
                         message.Write(banner.Category);
                         message.Write(banner.Collection);
-                    }
-                    else if (banner.Type == 4)
-                    {
+                    } else if (banner.Type == 4) {
                         message.Write(banner.OfferId);
                     }
                     message.Write(banner.Unknown);

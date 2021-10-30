@@ -12,8 +12,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
         public override void ParseFromNetworkMessage(NetworkMessage message)
         {
-            if (Client.Connection.ConnectionState == ConnectionState.Pending)
-            {
+            if (Client.Connection.ConnectionState == ConnectionState.Pending) {
                 Client.WorldMapStorage.ResetMap();
                 Client.WorldMapStorage.SetPosition(0, 0, 0);
             }

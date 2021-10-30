@@ -12,6 +12,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         public uint PremiumUntil { get; set; }
 
         public byte Profession { get; set; }
+        public byte MagicShield { get; set; }
 
         public bool HasPremium { get; set; }
         public bool HasReachedMain { get; set; }
@@ -31,9 +32,9 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
             KnownSpells.Capacity = message.ReadUInt16();
             for (var i = 0; i < KnownSpells.Capacity; ++i)
-            {
                 KnownSpells.Add(message.ReadByte());
-            }
+
+            MagicShield = message.ReadByte();
         }
 
         public override void AppendToNetworkMessage(NetworkMessage message)
@@ -47,9 +48,9 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             var count = Math.Min(KnownSpells.Count, ushort.MaxValue);
             message.Write((ushort)count);
             for (var i = 0; i < count; ++i)
-            {
                 message.Write(KnownSpells[i]);
-            }
+
+            MagicShield = message.ReadByte();
         }
     }
 }

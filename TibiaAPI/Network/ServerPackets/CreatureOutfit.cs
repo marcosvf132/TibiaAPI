@@ -27,12 +27,9 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         {
             message.Write((byte)ServerPacketType.CreatureOutfit);
             message.Write(CreatureId);
-            if (Outfit is OutfitInstance)
-            {
+            if (Outfit is OutfitInstance) {
                 message.Write((OutfitInstance)Outfit);
-            }
-            else
-            {
+            } else {
                 message.Write((ushort)0);
                 message.Write((ushort)Outfit.Id);
             }

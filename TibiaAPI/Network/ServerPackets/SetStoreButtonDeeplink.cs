@@ -16,11 +16,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
         public override void ParseFromNetworkMessage(NetworkMessage message)
         {
-            if (Client.VersionNumber >= 11887288)
-            {
-                // TODO
-                UnknownUShort1 = message.ReadUInt16();
-            }
+			UnknownUShort1 = message.ReadUInt16();
             StoreServiceType = message.ReadByte();
         }
 
@@ -28,10 +24,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         {
             // TODO
             message.Write((byte)ServerPacketType.SetStoreButtonDeeplink);
-            if (Client.VersionNumber >= 11887288)
-            {
-                message.Write(UnknownUShort1);
-            }
+			message.Write(UnknownUShort1);
             message.Write(StoreServiceType);
         }
     }

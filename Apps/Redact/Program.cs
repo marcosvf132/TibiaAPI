@@ -18,18 +18,13 @@ namespace Redact
 
         static void ParseArgs(string[] args)
         {
-            foreach (var arg in args)
-            {
+            foreach (var arg in args) {
                 if (!arg.Contains('=', StringComparison.CurrentCultureIgnoreCase))
-                {
                     continue;
-                }
 
                 var splitArg = arg.Split('=');
-                if (splitArg.Length == 1)
-                {
-                    switch (splitArg[0])
-                    {
+                if (splitArg.Length == 1) {
+                    switch (splitArg[0]) {
                         case "--keepclient":
                             {
                                 _keepClientPackets = true;
@@ -38,11 +33,8 @@ namespace Redact
                         default:
                             break;
                     }
-                }
-                else if (splitArg.Length == 2)
-                {
-                    switch (splitArg[0])
-                    {
+                } else if (splitArg.Length == 2) {
+                    switch (splitArg[0]) {
                         case "-r":
                         case "--recording":
                             {
@@ -58,22 +50,19 @@ namespace Redact
 
         static void Main(string[] args)
         {
-            if (args.Length <= 0)
-            {
+            if (args.Length <= 0) {
                 Console.WriteLine($"Invalid number of arguments: {args.Length}");
                 return;
             }
 
             ParseArgs(args);
 
-            if (string.IsNullOrEmpty(_recordingName) || !_recordingName.EndsWith(".oxr", StringComparison.CurrentCultureIgnoreCase))
-            {
+            if (string.IsNullOrEmpty(_recordingName) || !_recordingName.EndsWith(".oxr", StringComparison.CurrentCultureIgnoreCase)) {
                 Console.WriteLine($"Invalid recording file: {_recordingName ?? "null"}");
                 return;
             }
 
-            if (!File.Exists(_recordingName))
-            {
+            if (!File.Exists(_recordingName)) {
                 Console.WriteLine($"File does not exist: {_recordingName}");
                 return;
             }
@@ -94,20 +83,13 @@ namespace Redact
             var tibiaDirectory = string.Empty;
             var version = reader.ReadString();
             Console.WriteLine($"Client version: {version}");
-            if (int.TryParse(version.Replace(".", ""), out var versionNumber))
-            {
+            if (int.TryParse(version.Replace(".", ""), out var versionNumber)) {
                 var clientDataDirectory = $"ClientData/{versionNumber}";
                 if (!Directory.Exists(clientDataDirectory))
-                {
                     Console.WriteLine($"ClientData directory for version {version} doesn't exist. Falling back to default Tibia directory.");
-                }
                 else
-                {
                     tibiaDirectory = clientDataDirectory;
-                }
-            }
-            else
-            {
+            } else {
                 Console.WriteLine($"Invalid client version at beginning of recording: {version}");
             }
 
@@ -115,9 +97,8 @@ namespace Redact
 
             // We don't want to completely block these packets.
             if (_keepClientPackets)
-            {
                 client.Connection.OnReceivedClientTalkPacket += Connection_OnReceivedClientTalkPacket;
-            }
+
             client.Connection.OnReceivedServerFullMapPacket += Connection_OnReceivedServerMapPacket;
             client.Connection.OnReceivedServerBottomFloorPacket += Connection_OnReceivedServerMapPacket;
             client.Connection.OnReceivedServerBottomRowPacket += Connection_OnReceivedServerMapPacket;
@@ -132,8 +113,7 @@ namespace Redact
             client.Connection.OnReceivedServerMessagePacket += Connection_OnReceivedServerMessagePacket;
 
             // These packets aren't necessary in a redacted recording.
-            if (_keepClientPackets)
-            {
+            if (_keepClientPackets) {
                 client.Connection.OnReceivedClientAddBuddyPacket += Connection_OnReceivedUselessPacket;
                 client.Connection.OnReceivedClientBuddyGroupPacket += Connection_OnReceivedUselessPacket;
                 client.Connection.OnReceivedClientBugReportPacket += Connection_OnReceivedUselessPacket;
@@ -172,8 +152,7 @@ namespace Redact
             var clientSequenceNumber = 0u;
             var serverSequenceNumber = 0u;
 
-            while (reader.BaseStream.Position < reader.BaseStream.Length)
-            {
+            while (reader.BaseStream.Position < reader.BaseStream.Length) {
                 var packetType = (PacketType)reader.ReadByte();
                 var timestamp = reader.ReadInt64();
                 var size = reader.ReadUInt32();
@@ -181,9 +160,7 @@ namespace Redact
                 // If the Record app wasn't properly shutdown, a recording could
                 // possibly be missing data at the end.
                 if (reader.BaseStream.Length - reader.BaseStream.Position < size)
-                {
                     break;
-                }
 
                 _ = reader.ReadUInt16(); // packet size
                 _ = reader.ReadUInt32(); // sequence number
@@ -197,19 +174,13 @@ namespace Redact
                 Array.Copy(reader.ReadBytes((int)message.Size), message.GetBuffer(), message.Size);
 
                 if (packetType == PacketType.Server)
-                {
                     client.Connection.ParseServerMessage(client, message, outMessage);
-                }
                 else if (_keepClientPackets)
-                {
                     client.Connection.ParseClientMessage(client, message, outMessage);
-                }
 
                 // If the `outMessage` doesn't contain any data we don't want to write it to the file.
                 if (outMessage.Size <= 8)
-                {
                     continue;
-                }
 
                 // Prepare the message without an XTEA key so that the proper
                 // sizes are added to the packet data, but it stays unencrypted.
@@ -238,12 +209,9 @@ namespace Redact
         {
             var p = (OXGaming.TibiaAPI.Network.ServerPackets.Message)packet;
             if (p.MessageMode == MessageModeType.Look)
-            {
                 if (_lookPlayerRx.IsMatch(p.Text) || p.Text.Contains("You see yourself.", StringComparison.OrdinalIgnoreCase))
-                {
                     p.Text = "Redacted";
-                }
-            }
+
             return true;
         }
 
@@ -251,13 +219,10 @@ namespace Redact
         {
             var p = (OXGaming.TibiaAPI.Network.ServerPackets.Talk)packet;
             var creature = p.Client.CreatureStorage.GetCreature(p.SpeakerName);
-            if (creature is null || creature.Type == CreatureType.Player)
-            {
+            if (creature is null || creature.Type == CreatureType.Player) {
                 p.SpeakerLevel = 100;
                 p.SpeakerName = "Redacted";
-            }
-            else if (creature is object && creature.Type == CreatureType.Npc)
-            {
+            } else if (creature is object && creature.Type == CreatureType.Npc) {
                 // In case the NPC used the player's name in their message,
                 // we need to check and replace it.
                 p.Text = p.Text.Replace(p.Client.Player.Name, "Redacted", StringComparison.OrdinalIgnoreCase);
@@ -269,9 +234,8 @@ namespace Redact
         {
             var p = (OXGaming.TibiaAPI.Network.ServerPackets.CreatureUpdate)packet;
             if (p.Creature is object && p.Creature.Type == CreatureType.Player)
-            {
                 p.Creature.Name = "Redacted";
-            }
+
             return true;
         }
 
@@ -279,29 +243,22 @@ namespace Redact
         {
             var p = (OXGaming.TibiaAPI.Network.ServerPackets.CreateOnMap)packet;
             if (p.Creature is object && p.Creature.Type == CreatureType.Player)
-            {
                 p.Creature.Name = "Redacted";
-            }
+
             return true;
         }
 
         private static bool Connection_OnReceivedServerMapPacket(Packet packet)
         {
             var p = (OXGaming.TibiaAPI.Network.ServerPackets.Map)packet;
-            foreach (var field in p.Fields)
-            {
-                foreach (var obj in field.Objects)
-                {
+            foreach (var field in p.Fields) {
+                foreach (var obj in field.Objects) {
                     if (obj is null || obj.Id >= 100)
-                    {
                         continue;
-                    }
 
                     var creature = p.Client.CreatureStorage.GetCreature(obj.Data);
                     if (creature is null || creature.Type != CreatureType.Player)
-                    {
                         continue;
-                    }
 
                     creature.Name = "Redacted";
                 }

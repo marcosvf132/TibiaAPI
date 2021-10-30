@@ -23,24 +23,19 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
             Client.WorldMapStorage.SetPosition(position.X, position.Y, position.Z);
 
-            if (position.Z > (GroundLayer + 1))
-            {
+            if (position.Z > (GroundLayer + 1)) {
                Client.WorldMapStorage.ScrollMap(0, 0, 1);
 
                if (position.Z <= (MapMaxZ - UndergroundLayer))
-               {
                    message.ReadFloor(0, 0, Fields);
-               }
-            }
-            else if (position.Z == (GroundLayer + 1))
-            {
+
+            } else if (position.Z == (GroundLayer + 1)) {
                Client.WorldMapStorage.ScrollMap(0, 0, (UndergroundLayer + 1));
 
-               var numberOfTilesToSkip = 0;
-               var floorNumber = UndergroundLayer;
-               while (floorNumber >= 0)
-               {
-                   numberOfTilesToSkip = message.ReadFloor(floorNumber, numberOfTilesToSkip, Fields);
+                var numberOfTilesToSkip = 0;
+                var floorNumber = UndergroundLayer;
+               while (floorNumber >= 0) {
+                    numberOfTilesToSkip = message.ReadFloor(floorNumber, numberOfTilesToSkip, Fields);
                    floorNumber--;
                }
             }

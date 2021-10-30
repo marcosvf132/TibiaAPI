@@ -24,6 +24,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         public ushort Stamina { get; set; }
         public ushort StoreBoostAddend { get; set; }
         public ushort VoucherAddend { get; set; }
+        public ushort MagicShield { get; set; }
+        public ushort MaxMagicShield { get; set; }
 
         public byte LevelPercent { get; set; }
         public byte MagicLevel { get; set; }
@@ -43,29 +45,15 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             CurrentHealth = message.ReadUInt16();
             MaxHealth = message.ReadUInt16();
             FreeCapacity = message.ReadUInt32();
-            if (Client.VersionNumber <= 11496030)
-            {
-                MaxCapacity = message.ReadUInt32();
-            }
             Experience = message.ReadUInt64();
             Level = message.ReadUInt16();
             LevelPercent = message.ReadByte();
             BaseXpGain = message.ReadUInt16();
-            if (Client.VersionNumber < 11900000)
-            {
-                VoucherAddend = message.ReadUInt16();
-            }
             GrindingAddend = message.ReadUInt16();
             StoreBoostAddend = message.ReadUInt16();
             HuntingBoostFactor = message.ReadUInt16();
             CurrentMana = message.ReadUInt16();
             MaxMana = message.ReadUInt16();
-            if (Client.VersionNumber < 12000000)
-            {
-                MagicLevel = message.ReadByte();
-                MagicLevelBase = message.ReadByte();
-                MagicLevelPercent = message.ReadByte();
-            }
             Soul = message.ReadByte();
             Stamina = message.ReadUInt16();
             Speed = message.ReadUInt16();
@@ -73,6 +61,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             OfflineTrainingTime = message.ReadUInt16();
             RemainingStoreXpBoostSeconds = message.ReadUInt16();
             CanBuyMoreStoreXpBoosts = message.ReadBool();
+            MagicShield = message.ReadUInt16();
+            MaxMagicShield = message.ReadUInt16();
         }
 
         public override void AppendToNetworkMessage(NetworkMessage message)
@@ -81,29 +71,15 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             message.Write(CurrentHealth);
             message.Write(MaxHealth);
             message.Write(FreeCapacity);
-            if (Client.VersionNumber <= 11496030)
-            {
-                message.Write(MaxCapacity);
-            }
             message.Write(Experience);
             message.Write(Level);
             message.Write(LevelPercent);
             message.Write(BaseXpGain);
-            if (Client.VersionNumber < 11900000)
-            {
-                message.Write(VoucherAddend);
-            }
             message.Write(GrindingAddend);
             message.Write(StoreBoostAddend);
             message.Write(HuntingBoostFactor);
             message.Write(CurrentMana);
             message.Write(MaxMana);
-            if (Client.VersionNumber < 12000000)
-            {
-                message.Write(MagicLevel);
-                message.Write(MagicLevelBase);
-                message.Write(MagicLevelPercent);
-            }
             message.Write(Soul);
             message.Write(Stamina);
             message.Write(Speed);
@@ -111,6 +87,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             message.Write(OfflineTrainingTime);
             message.Write(RemainingStoreXpBoostSeconds);
             message.Write(CanBuyMoreStoreXpBoosts);
+            message.Write(MagicShield);
+            message.Write(MaxMagicShield);
         }
     }
 }

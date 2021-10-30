@@ -37,25 +37,18 @@ namespace OXGaming.TibiaAPI.Network.ClientPackets
             ClientType = message.ReadUInt16();
             ProtocolVersion = message.ReadUInt16();
             ClientVersion = message.ReadUInt32();
-
-            if (Client.VersionNumber >= 124010030)
-            {
-                Version = message.ReadString();
-            }
+			Version = message.ReadString();
 
             DatRevision = message.ReadUInt16();
             ClientPreviewState = message.ReadByte();
 
             if (message.ReadByte() != 0)
-            {
                 throw new Exception("[ClientPackets.Login.ParseFromNetworkMessage] RSA decryption failed.");
-            }
 
             XteaKey.Clear();
             for (var i = 0; i < 4; ++i)
-            {
                 XteaKey.Add(message.ReadUInt32());
-            }
+			
             Client.Connection.SetXteaKey(XteaKey);
 
             IsGameMaster = message.ReadBool();
@@ -74,25 +67,17 @@ namespace OXGaming.TibiaAPI.Network.ClientPackets
             message.Write(ClientType);
             message.Write(ProtocolVersion);
             message.Write(ClientVersion);
-
-            if (Client.VersionNumber >= 124010030)
-            {
-                message.Write(Version);
-            }
+			message.Write(Version);
 
             message.Write(DatRevision);
             message.Write(ClientPreviewState);
             message.Write((byte)0); // Start RSA block.
 
             if (XteaKey.Count != 4)
-            {
                 throw new Exception($"[ClientPackets.Login.ParseFromNetworkMessage] Invalid XTEA key length: {XteaKey.Count}");
-            }
 
             foreach (var key in XteaKey)
-            {
                 message.Write(key);
-            }
 
             message.Write(IsGameMaster);
             message.Write(SessionKey);

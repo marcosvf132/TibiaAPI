@@ -88,10 +88,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                         throw new Exception($"[PreyHuntingTaskData.ParseFromNetworkMessage] Unknown state: {State}");
                     }
             }
-            if (Client.VersionNumber >= 125110194)
-            {
-                TimeLeftUntilFreeReroll = message.ReadUInt32();
-            }
+            TimeLeftUntilFreeReroll = message.ReadUInt32();
         }
 
         public override void AppendToNetworkMessage(NetworkMessage message)

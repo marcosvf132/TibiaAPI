@@ -26,8 +26,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             CharmPoints = message.ReadUInt32();
 
             Charms.Capacity = message.ReadByte();
-            for (var i = 0; i < Charms.Capacity; ++i)
-            {
+            for (var i = 0; i < Charms.Capacity; ++i) {
                 var id = message.ReadByte();
                 var name = message.ReadString();
                 var description = message.ReadString();
@@ -37,8 +36,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                 var isAssigned = message.ReadBool();
                 var raceId = ushort.MinValue;
                 var removalCost = uint.MinValue;
-                if (isAssigned)
-                {
+                if (isAssigned) {
                     raceId = message.ReadUInt16();
                     removalCost = message.ReadUInt32();
                 }
@@ -49,9 +47,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
             AssignableRaceIds.Capacity = message.ReadUInt16();
             for (var i = 0; i < AssignableRaceIds.Capacity; ++i)
-            {
                 AssignableRaceIds.Add(message.ReadUInt16());
-            }
         }
 
         public override void AppendToNetworkMessage(NetworkMessage message)
@@ -61,8 +57,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
             var count = Math.Min(Charms.Count, byte.MaxValue);
             message.Write((byte)count);
-            for (var i = 0; i < count; ++i)
-            {
+            for (var i = 0; i < count; ++i) {
                 var charm = Charms[i];
                 message.Write(charm.Id);
                 message.Write(charm.Name);
@@ -71,8 +66,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                 message.Write(charm.CharmPoints);
                 message.Write(charm.IsPurchased);
                 message.Write(charm.IsAssigned);
-                if (charm.IsAssigned)
-                {
+                if (charm.IsAssigned) {
                     message.Write(charm.RaceId);
                     message.Write(charm.RemovalCost);
                 }
@@ -83,9 +77,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             count = Math.Min(AssignableRaceIds.Count, ushort.MaxValue);
             message.Write((ushort)count);
             for (var i = 0; i < count; ++i)
-            {
                 message.Write(AssignableRaceIds[i]);
-            }
         }
     }
 }

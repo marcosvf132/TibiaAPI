@@ -32,15 +32,10 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         public override void ParseFromNetworkMessage(NetworkMessage message)
         {
             Blessings.Capacity = message.ReadByte();
-            for (var i = 0; i < Blessings.Capacity; ++i)
-            {
+            for (var i = 0; i < Blessings.Capacity; ++i) {
                 var blessingId = message.ReadUInt16();
                 var totalAmount = message.ReadByte();
-                var amountFromStore = byte.MinValue;
-                if (Client.VersionNumber >= 12200000)
-                {
-                    amountFromStore = message.ReadByte();
-                }
+                var amountFromStore = message.ReadByte();
                 Blessings.Add((blessingId, totalAmount, amountFromStore));
             }
 
@@ -55,8 +50,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             IsWearingAoL = message.ReadBool();
 
             History.Capacity = message.ReadByte();
-            for (var i = 0; i < History.Capacity; ++i)
-            {
+            for (var i = 0; i < History.Capacity; ++i) {
                 var timestamp = message.ReadUInt32();
                 var color = message.ReadByte();
                 var text = message.ReadString();
@@ -69,15 +63,11 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             message.Write((byte)ServerPacketType.BlessingsDialog);
             var count = Math.Min(Blessings.Count, byte.MaxValue);
             message.Write((byte)count);
-            for (var i = 0; i < count; ++i)
-            {
+            for (var i = 0; i < count; ++i) {
                 var (BlessingId, TotalAmount, AmountFromStore) = Blessings[i];
                 message.Write(BlessingId);
                 message.Write(TotalAmount);
-                if (Client.VersionNumber >= 12200000)
-                {
-                    message.Write(AmountFromStore);
-                }
+                message.Write(AmountFromStore);
             }
 
             message.Write(IsPremium);
@@ -92,8 +82,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
             count = Math.Min(History.Count, byte.MaxValue);
             message.Write((byte)count);
-            for (var i = 0; i < count; ++i)
-            {
+            for (var i = 0; i < count; ++i) {
                 var (Timestamp, Color, Text) = History[i];
                 message.Write(Timestamp);
                 message.Write(Color);

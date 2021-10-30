@@ -20,9 +20,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         {
             DeathType = (DeathType)message.ReadByte();
             if (DeathType == DeathType.Regular)
-            {
                 FairFightFactor = message.ReadByte();
-            }
+
             IsSubsequentBlessingApplicable = message.ReadBool();
         }
 
@@ -31,9 +30,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             message.Write((byte)ServerPacketType.Dead);
             message.Write((byte)DeathType);
             if (DeathType == DeathType.Regular)
-            {
                 message.Write(FairFightFactor);
-            }
+
             message.Write(IsSubsequentBlessingApplicable);
         }
     }

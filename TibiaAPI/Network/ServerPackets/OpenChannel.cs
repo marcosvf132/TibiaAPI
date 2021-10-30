@@ -27,15 +27,11 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
             JoinedPlayers.Capacity = message.ReadUInt16();
             for (var i = 0; i < JoinedPlayers.Capacity; ++i)
-            {
                 JoinedPlayers.Add(message.ReadString());
-            }
 
             InvitedPlayers.Capacity = message.ReadUInt16();
             for (var i = 0; i < InvitedPlayers.Capacity; ++i)
-            {
                 InvitedPlayers.Add(message.ReadString());
-            }
         }
 
         public override void AppendToNetworkMessage(NetworkMessage message)
@@ -46,15 +42,12 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             var count = Math.Min(JoinedPlayers.Count, ushort.MaxValue);
             message.Write((ushort)count);
             for (var i = 0; i < count; ++i)
-            {
                 message.Write(JoinedPlayers[i]);
-            }
+			
             count = Math.Min(InvitedPlayers.Count, ushort.MaxValue);
             message.Write((ushort)count);
             for (var i = 0; i < count; ++i)
-            {
                 message.Write(InvitedPlayers[i]);
-            }
         }
     }
 }

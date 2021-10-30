@@ -22,8 +22,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             UseMainContainerAsFallback = message.ReadBool();
 
             LootContainers.Capacity = message.ReadByte();
-            for (var i = 0; i < LootContainers.Capacity; ++i)
-            {
+            for (var i = 0; i < LootContainers.Capacity; ++i) {
                 var id = message.ReadByte();
                 var objectId = message.ReadUInt16();
                 LootContainers.Add((id, objectId));
@@ -36,8 +35,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             message.Write(UseMainContainerAsFallback);
             var count = Math.Min(LootContainers.Count, byte.MaxValue);
             message.Write((byte)count);
-            for (var i = 0; i < count; ++i)
-            {
+            for (var i = 0; i < count; ++i) {
                 var (Id, ObjectId) = LootContainers[i];
                 message.Write(Id);
                 message.Write(ObjectId);

@@ -23,11 +23,7 @@ namespace OXGaming.TibiaAPI.Network.ClientPackets
 
         public override void ParseFromNetworkMessage(NetworkMessage message)
         {
-            if (Client.VersionNumber >= 12209066)
-            {
-                // TODO
-                UnknownByte1 = message.ReadByte();
-            }
+			UnknownByte1 = message.ReadByte();
             OutfitId = message.ReadUInt16();
             HeadColor = message.ReadByte();
             TorsoColor = message.ReadByte();
@@ -40,10 +36,7 @@ namespace OXGaming.TibiaAPI.Network.ClientPackets
         public override void AppendToNetworkMessage(NetworkMessage message)
         {
             message.Write((byte)ClientPacketType.SetOutfit);
-            if (Client.VersionNumber >= 12209066)
-            {
-                message.Write(UnknownByte1);
-            }
+			message.Write(UnknownByte1);
             message.Write(OutfitId);
             message.Write(HeadColor);
             message.Write(TorsoColor);
