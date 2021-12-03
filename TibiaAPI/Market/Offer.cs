@@ -12,7 +12,8 @@ namespace OXGaming.TibiaAPI.Market
 
         public string Character { get; set; }
 
-        public uint PiecePrice { get; set; }
+        public ulong PiecePrice { get; set; }
+
         public uint TerminationTimestamp { get; set; }
         public uint TotalPrice { get; set; }
 
@@ -21,7 +22,7 @@ namespace OXGaming.TibiaAPI.Market
         public ushort Amount { get; set; }
         public ushort TypeId { get; set; }
 
-        public Offer(OfferId offerId, int kind, ushort typeId, ushort amount, uint piecePrice, string character, MarketOfferTerminationReason terminationReason)
+        public Offer(OfferId offerId, int kind, ushort typeId, ushort amount, ulong piecePrice, string character, MarketOfferTerminationReason terminationReason)
         {
             OfferId = offerId ?? throw new ArgumentNullException(nameof(offerId));
 

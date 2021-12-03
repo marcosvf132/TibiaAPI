@@ -23,6 +23,10 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         public uint BonusCapacity { get; set; }
         public uint MaxCapacity { get; set; }
 
+        public uint unknownU32 { get; set; }
+        public (ushort Level, ushort Base) UnknownOne { get; set; }
+        public (ushort Level, ushort Base) UnknownTwo { get; set; }
+
         public PlayerSkills(Client client)
         {
             Client = client;
@@ -49,6 +53,10 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
             MaxCapacity = message.ReadUInt32();
             BonusCapacity = message.ReadUInt32();
+			
+			unknownU32 = message.ReadUInt32(); // 0
+            UnknownOne = (message.ReadUInt16(), message.ReadUInt16()); // 47000 - 0
+            UnknownTwo = (message.ReadUInt16(), message.ReadUInt16()); // 47000 - 0
         }
 
         public override void AppendToNetworkMessage(NetworkMessage message)
@@ -123,6 +131,13 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
             message.Write(MaxCapacity);
             message.Write(BonusCapacity);
+			
+            message.Write(unknownU32);
+            message.Write(UnknownOne.Level);
+            message.Write(UnknownOne.Base);
+			
+            message.Write(UnknownTwo.Level);
+            message.Write(UnknownTwo.Base);
         }
     }
 }

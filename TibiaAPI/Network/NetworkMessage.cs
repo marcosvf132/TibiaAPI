@@ -374,6 +374,11 @@ namespace OXGaming.TibiaAPI.Network
                 ReadBool(); // Visible
             }
 
+            // 12.80
+            if (objectType.Flags.Upgradeclassification != null && objectType.Flags.Upgradeclassification.UpgradeClassification > 0) {
+                ReadByte(); // Direction
+            }
+
             //if (objectType.FrameGroup[0].SpriteInfo.Animation != null)
             //    objectInstance.Phase = ReadByte();
 
@@ -523,7 +528,7 @@ namespace OXGaming.TibiaAPI.Network
                 itemId = ReadUInt16();
 
             var amount = ReadUInt16();
-            var piecePrice = ReadUInt32();
+            var piecePrice = ReadUInt64();
             var character = string.Empty;
             var terminationReason = MarketOfferTerminationReason.Active;
 

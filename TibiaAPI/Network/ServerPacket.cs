@@ -120,6 +120,8 @@ namespace OXGaming.TibiaAPI.Network
                     return new ServerPackets.RemoveGraphicalEffect(client);
                 case ServerPacketType.MissileEffect:
                     return new ServerPackets.MissileEffect(client);
+                case ServerPacketType.ForgingBasicData:
+                    return new ServerPackets.ForgingBasicData(client);
                 case ServerPacketType.Trappers:
                     return new ServerPackets.Trappers(client);
                 case ServerPacketType.CreatureUpdate:
