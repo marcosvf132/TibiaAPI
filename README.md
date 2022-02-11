@@ -1,7 +1,7 @@
 ![.NET Core](https://github.com/jo3bingham/TibiaAPI/workflows/.NET%20Core/badge.svg)
 
 # Disclaimer:
-The original version of this API included support for all protocols, but on my fork this support was removed. This version was updated to work on protocol v12.72 or higher, using it on older protocols may not work as intended and may not be useful for you.
+The original version of this API included support for all protocols, but on my fork this support was removed. This version was updated to work on protocol v12.85 or higher, using it on older protocols may not work as intended and may not be useful for you.
 
 This TibiaAPI version is still a work in progress and may have bugs.
 
