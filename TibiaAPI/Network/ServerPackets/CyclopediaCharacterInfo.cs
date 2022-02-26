@@ -124,13 +124,6 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         public ushort MagicShieldPercentage { get; set; }
         public ushort Reflection { get; set; }
 
-        public ushort UnknownU16One { get; set; }
-        public ushort UnknownU16Two { get; set; }
-        public ushort UnknownU16Three { get; set; }
-        public ushort UnknownU16Four { get; set; }
-        public ushort UnknownU16Five { get; set; }
-        public ushort UnknownU16Six { get; set; }
-
         public byte AttackType { get; set; }
         public byte BlessingsCurrent { get; set; }
         public byte BlessingsMax { get; set; }
@@ -229,32 +222,19 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 					MagicBoostValue = message.ReadUInt16();
 				}
 			} else if (Type == (byte)CharacterInfoPage.Combat) {
-				// To-Do: Group all as enum skills
                 CriticalHitChancePercentBase = message.ReadUInt16();
                 CriticalHitChancePercentBonus = message.ReadUInt16();
-				
                 CriticalHitExtraDamagePercentBase = message.ReadUInt16();
                 CriticalHitExtraDamagePercentBonus = message.ReadUInt16();
-				
                 LifeLeechChancePercentBase = message.ReadUInt16();
                 LifeLeechChancePercentBonus = message.ReadUInt16();
-				
                 LifeLeechAmountPercentBase = message.ReadUInt16();
                 LifeLeechAmountPercentBonus = message.ReadUInt16();
-				
                 ManaLeechChancePercentBase = message.ReadUInt16();
                 ManaLeechChancePercentBonus = message.ReadUInt16();
-				
                 ManaLeechAmountPercentBase = message.ReadUInt16();
                 ManaLeechAmountPercentBonus = message.ReadUInt16();
-
-				UnknownU16One = message.ReadUInt16();
-				UnknownU16Two = message.ReadUInt16();
-				UnknownU16Three = message.ReadUInt16();
-				UnknownU16Four = message.ReadUInt16();
-				UnknownU16Five = message.ReadUInt16();
-				UnknownU16Six = message.ReadUInt16();
-
+				
                 Cleave = message.ReadUInt16();
                 MagicShieldBonus = message.ReadUInt16();
                 MagicShieldPercentage = message.ReadUInt16();
@@ -277,11 +257,11 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                 DamageReductions.Capacity = message.ReadByte();
                 for (var i = 0; i < DamageReductions.Capacity; ++i)
                     DamageReductions.Add((message.ReadByte(), message.ReadByte()));
-
+				
 				Concotions.Capacity = message.ReadByte();
 				for (var i = 0; i < Concotions.Capacity; ++i)
                     Concotions.Add((message.ReadUInt16(), message.ReadUInt16()));
-
+					
             } else if (Type == (byte)CharacterInfoPage.Deaths) {
                 RecentDeathsPageCurrent = message.ReadUInt16();
                 RecentDeathsPageMax = message.ReadUInt16();
@@ -544,14 +524,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                 message.Write(ManaLeechChancePercentBonus);
                 message.Write(LifeLeechAmountPercentBase);
                 message.Write(LifeLeechAmountPercentBonus);
-
-				message.Write(UnknownU16One);
-				message.Write(UnknownU16Two);
-				message.Write(UnknownU16Three);
-				message.Write(UnknownU16Four);
-				message.Write(UnknownU16Five);
-				message.Write(UnknownU16Six);
-
+				
                 message.Write(Cleave);
                 message.Write(MagicShieldBonus);
                 message.Write(MagicShieldPercentage);
@@ -582,7 +555,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                     message.Write(Concotions[i].Id);
                     message.Write(Concotions[i].Time);
                 }
-
+					
             } else if (Type == (byte)CharacterInfoPage.Deaths) {
                 message.Write(RecentDeathsPageCurrent);
                 message.Write(RecentDeathsPageMax);
