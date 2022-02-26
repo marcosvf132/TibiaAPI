@@ -196,6 +196,8 @@ namespace OXGaming.TibiaAPI.Network
                     return new ServerPackets.PrivateChannel(client);
                 case ServerPacketType.EditGuildMessage:
                     return new ServerPackets.EditGuildMessage(client);
+                case ServerPacketType.ExperienceTracker:
+                    return new ServerPackets.ExperienceTracker(client);
                 case ServerPacketType.Highscores:
                     return new ServerPackets.Highscores(client);
                 case ServerPacketType.OpenOwnChannel:
