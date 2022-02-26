@@ -9,14 +9,12 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
     {
         public Dictionary<MarketDetailField, string> Details { get; } = new Dictionary<MarketDetailField, string>();
 
-        public List<(uint TotalTransactions, ulong TotalPrice, ulong MaximumPrice, ulong MinimumPrice)> BuyStatistics { get; } =
-            new List<(uint TotalTransactions, ulong TotalPrice, ulong MaximumPrice, ulong MinimumPrice)>();
-        public List<(uint TotalTransactions, ulong TotalPrice, ulong MaximumPrice, ulong MinimumPrice)> SellStatistics { get; } =
-            new List<(uint TotalTransactions, ulong TotalPrice, ulong MaximumPrice, ulong MinimumPrice)>();
+        public List<(uint TotalTransactions, uint TotalPrice, uint MaximumPrice, uint MinimumPrice)> BuyStatistics { get; } =
+            new List<(uint TotalTransactions, uint TotalPrice, uint MaximumPrice, uint MinimumPrice)>();
+        public List<(uint TotalTransactions, uint TotalPrice, uint MaximumPrice, uint MinimumPrice)> SellStatistics { get; } =
+            new List<(uint TotalTransactions, uint TotalPrice, uint MaximumPrice, uint MinimumPrice)>();
 
         public ushort TypeId { get; set; }
-
-        public byte Tier { get; set; }
 
         public MarketDetail(Client client)
         {
@@ -27,12 +25,6 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         public override void ParseFromNetworkMessage(NetworkMessage message)
         {
             TypeId = message.ReadUInt16();
-            var obectType = Client.AppearanceStorage.GetObjectType(TypeId);
-            if (obectType == null)
-                throw new Exception($"[MarketDetail.ParseFromNetworkMessage] Object type not found.");
-
-            if (obectType.Flags.Upgradeclassification != null)
-                Tier = message.ReadByte();
 
             foreach (MarketDetailField value in Enum.GetValues(typeof(MarketDetailField)))
                 Details.Add(value, message.ReadString());
@@ -44,9 +36,9 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             for (var i = 0; i < BuyStatistics.Capacity; ++i) {
                 tempTimestamp -= 86400;
                 var totalTransactions = message.ReadUInt32();
-                var totalPrice = message.ReadUInt64();
-                var maximumPrice = message.ReadUInt64();
-                var minimumPrice = message.ReadUInt64();
+                var totalPrice = message.ReadUInt32();
+                var maximumPrice = message.ReadUInt32();
+                var minimumPrice = message.ReadUInt32();
                 BuyStatistics.Add((totalTransactions, totalPrice, maximumPrice, minimumPrice));
             }
 
@@ -56,9 +48,9 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             for (var i = 0; i < SellStatistics.Capacity; ++i) {
                 tempTimestamp -= 86400;
                 var totalTransactions = message.ReadUInt32();
-                var totalPrice = message.ReadUInt64();
-                var maximumPrice = message.ReadUInt64();
-                var minimumPrice = message.ReadUInt64();
+                var totalPrice = message.ReadUInt32();
+                var maximumPrice = message.ReadUInt32();
+                var minimumPrice = message.ReadUInt32();
                 SellStatistics.Add((totalTransactions, totalPrice, maximumPrice, minimumPrice));
             }
         }
@@ -67,12 +59,6 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         {
             message.Write((byte)ServerPacketType.MarketDetail);
             message.Write(TypeId);
-            var obectType = Client.AppearanceStorage.GetObjectType(TypeId);
-            if (obectType == null)
-                throw new Exception($"[MarketDetail.AppendToNetworkMessage] Object type not found.");
-
-            if (obectType.Flags.Upgradeclassification != null)
-                message.Write(Tier);
 
             foreach (MarketDetailField value in Enum.GetValues(typeof(MarketDetailField))) {
                 if (Details.ContainsKey(value))

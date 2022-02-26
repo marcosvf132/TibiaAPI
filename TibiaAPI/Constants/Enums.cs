@@ -238,12 +238,9 @@
         WeaponType = 13,
         Weight = 14,
         ImbuementSlots = 15,
-		MagicShield = 16,
-		Cleave = 17,
-		Reflection = 18,
-		PerfectShot = 19,
-		UpgradeClassification = 20,
-		UpgradeTier = 21
+		Cleave = 16,
+		Reflection = 17,
+		PerfectShot = 18
     }
 
     public enum FluidType
@@ -584,7 +581,6 @@
         GraphicalEffects = 0x83,
         RemoveGraphicalEffect = 0x84,
         MissileEffect = 0x85,
-		ForgingBasicData = 0x86,
         Trappers = 0x87,
         CreatureUpdate = 0x8B,
         CreatureHealth = 0x8C,

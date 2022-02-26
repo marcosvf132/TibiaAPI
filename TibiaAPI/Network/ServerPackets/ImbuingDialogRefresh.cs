@@ -11,11 +11,9 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         public List<AstralSource> AvailableAstralSources { get; } = new List<AstralSource>();
         public List<ExistingImbuement> ExistingImbuements { get; } = new List<ExistingImbuement>();
         public List<ImbuementData> AvailableImbuements { get; } = new List<ImbuementData>();
-
+        
         public ushort AppearanceTypeId { get; set; }
-
-        public byte Tier { get; set; }
-
+		
         public ImbuingDialogRefresh(Client client)
         {
             Client = client;
@@ -25,13 +23,6 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         public override void ParseFromNetworkMessage(NetworkMessage message)
         {
             AppearanceTypeId = message.ReadUInt16();
-            var obectType = Client.AppearanceStorage.GetObjectType(AppearanceTypeId);
-            if (obectType == null)
-                throw new Exception($"[ImbuingDialogRefresh.ParseFromNetworkMessage] Object type not found.");
-
-            if (obectType.Flags.Upgradeclassification != null)
-                Tier = message.ReadByte();
-
 
             ExistingImbuements.Capacity = message.ReadByte();
             for (var i = 0; i < ExistingImbuements.Capacity; i++) {
@@ -62,12 +53,6 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         {
             message.Write((byte)ServerPacketType.ImbuingDialogRefresh);
             message.Write(AppearanceTypeId);
-            var obectType = Client.AppearanceStorage.GetObjectType(AppearanceTypeId);
-            if (obectType == null)
-                throw new Exception($"[MarketDetail.AppendToNetworkMessage] Object type not found.");
-
-            if (obectType.Flags.Upgradeclassification != null)
-                message.Write(Tier);
 
             var existingImbuementsCount = (byte)Math.Min(ExistingImbuements.Count, byte.MaxValue);
             message.Write(existingImbuementsCount);

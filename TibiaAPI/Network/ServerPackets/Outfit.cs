@@ -26,8 +26,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         public bool IsMounted { get; set; }
         public bool IsVisible { get; set; }
         public bool IsOutfit { get; set; }
-        public bool isRandomMount { get; set; }
-
+		
         public byte StackPos { get; set; }
         public byte Direction { get; set; }
         public byte Type { get; set; }
@@ -83,7 +82,6 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 			Type = message.ReadByte();
             if (Type == (byte)OutfitWindowType.SelectOutfit) {
                 IsMounted = message.ReadBool();
-				isRandomMount = message.ReadBool();
             } else if (Type == (byte)OutfitWindowType.TryPodium) {
                 IsMounted = message.ReadBool();
 
@@ -140,7 +138,6 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 			message.Write(Type);
 			if (Type == (byte)OutfitWindowType.SelectOutfit) {
 				message.Write(IsMounted);
-				message.Write(isRandomMount);
 			} else if (Type == (byte)OutfitWindowType.TryPodium) {
 				message.Write(IsMounted);
 				

@@ -12,8 +12,6 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         public List<Offer> SellOffers { get; } = new List<Offer>();
 
         public ushort TypeId { get; set; }
-		
-		public byte Tier { get; set; }
 
         public MarketBrowse(Client client)
         {
@@ -23,16 +21,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
         public override void ParseFromNetworkMessage(NetworkMessage message)
         {
-			var classification = message.ReadByte();
-
            TypeId = message.ReadUInt16();
-
-            var obectType = Client.AppearanceStorage.GetObjectType(TypeId);
-            if (obectType == null)
-                throw new Exception($"[MarketDetail.ParseFromNetworkMessage] Object type not found.");
-
-            if (obectType.Flags.Upgradeclassification != null)
-                Tier = message.ReadByte();
 
            BuyOffers.Capacity = (int)message.ReadUInt32();
            for (uint i = 0; i < BuyOffers.Capacity; ++i)
@@ -47,13 +36,6 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         {
            message.Write((byte)ServerPacketType.MarketBrowse);
            message.Write(TypeId);
-
-            var obectType = Client.AppearanceStorage.GetObjectType(TypeId);
-            if (obectType == null)
-                throw new Exception($"[MarketDetail.ParseFromNetworkMessage] Object type not found.");
-
-            if (obectType.Flags.Upgradeclassification != null)
-                message.Write(Tier);
 
            var count = Math.Min(BuyOffers.Count, uint.MaxValue);
            message.Write((uint)count);

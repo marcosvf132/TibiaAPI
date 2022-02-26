@@ -7,8 +7,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 {
     public class MarketEnter : ServerPacket
     {
-        public List<(ushort ObjectId, byte Tier, ushort Count)> DepotObjects { get; } =
-            new List<(ushort ObjectId, byte Tier, ushort Count)>();
+        public List<(ushort ObjectId, ushort Count)> DepotObjects { get; } =
+            new List<(ushort ObjectId, ushort Count)>();
 
         public long AccountBalance { get; set; }
 
@@ -26,16 +26,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             DepotObjects.Capacity = message.ReadUInt16();
             for (var i = 0; i < DepotObjects.Capacity; ++i) {
                 var objectId = message.ReadUInt16();
-				byte tier = 0;
-				var obectType = Client.AppearanceStorage.GetObjectType(objectId);
-				if (obectType == null)
-					throw new Exception($"[MarketEnter.ParseFromNetworkMessage] Object type not found.");
-
-				if (obectType.Flags.Upgradeclassification != null)
-					tier = message.ReadByte();
-
                 var count = message.ReadUInt16();
-                DepotObjects.Add((objectId, tier, count));
+                DepotObjects.Add((objectId, count));
             }
         }
 
@@ -46,15 +38,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             var count = Math.Min(DepotObjects.Count, ushort.MaxValue);
             message.Write((ushort)count);
             for (var i = 0; i < count; ++i) {
-                var (ObjectId, Tier, Count) = DepotObjects[i];
+                var (ObjectId, Count) = DepotObjects[i];
                 message.Write(ObjectId);
-				var obectType = Client.AppearanceStorage.GetObjectType(ObjectId);
-				if (obectType == null)
-					throw new Exception($"[MarketEnter.AppendToNetworkMessage] Object type not found.");
-
-				if (obectType.Flags.Upgradeclassification != null)
-					message.Write(Tier);
-
                 message.Write(Count);
             }
         }

@@ -211,7 +211,6 @@ namespace OXGaming.TibiaAPI.Network
         public event ReceivedPacketEventHandler OnReceivedServerGraphicalEffectsPacket;
         public event ReceivedPacketEventHandler OnReceivedServerRemoveGraphicalEffectPacket;
         public event ReceivedPacketEventHandler OnReceivedServerMissileEffectPacket;
-        public event ReceivedPacketEventHandler OnReceivedForgingBasicDataPacket;
         public event ReceivedPacketEventHandler OnReceivedServerTrappersPacket;
         public event ReceivedPacketEventHandler OnReceivedServerCreatureUpdatePacket;
         public event ReceivedPacketEventHandler OnReceivedServerCreatureHealthPacket;
@@ -1038,9 +1037,6 @@ namespace OXGaming.TibiaAPI.Network
                             break;
                         case ServerPacketType.MissileEffect:
                             packet.Forward = OnReceivedServerMissileEffectPacket?.Invoke(packet) ?? true;
-                            break;
-                        case ServerPacketType.ForgingBasicData:
-                            packet.Forward = OnReceivedForgingBasicDataPacket?.Invoke(packet) ?? true;
                             break;
                         case ServerPacketType.Trappers:
                             packet.Forward = OnReceivedServerTrappersPacket?.Invoke(packet) ?? true;
