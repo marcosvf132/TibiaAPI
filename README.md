@@ -3,8 +3,6 @@
 # Disclaimer:
 The original version of this API included support for all protocols, but on my fork this support was removed. This version was updated to work on protocol v12.72 or higher, using it on older protocols may not work as intended and may not be useful for you.
 
-This TibiaAPI version is still a work in progress and may have bugs.
-
 # TibiaAPI
 TibiaAPI is an open-source, cross-platform proxy written in C#. You will need to install .NET Core 3.1 to take full advantage of the code in this repository.
 
