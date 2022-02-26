@@ -31,26 +31,35 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         {
             Position = message.ReadPosition();
             if (!Client.WorldMapStorage.IsVisible(Position.X, Position.Y, Position.Z, true))
+            {
                 throw new Exception($"[CreateOnMap.ParseFromNetworkMessage] Co-ordinate {Position} is out of range.");
+            }
 
             var mapPosition = Client.WorldMapStorage.ToMap(Position);
             StackPosition = message.ReadByte();
             Id = message.ReadUInt16();
             if (Id == (int)CreatureInstanceType.UnknownCreature ||
                 Id == (int)CreatureInstanceType.OutdatedCreature ||
-                Id == (int)CreatureInstanceType.Creature) {
+                Id == (int)CreatureInstanceType.Creature)
+            {
                 Creature = message.ReadCreatureInstance(Id, Position);
                 ObjectInstance = Client.AppearanceStorage.CreateObjectInstance((uint)CreatureInstanceType.Creature, Creature.Id);
-            } else {
+            }
+            else
+            {
                 ObjectInstance = message.ReadObjectInstance(Id);
             }
 
-            if (StackPosition == 255) {
+            if (StackPosition == 255)
+            {
                 Client.WorldMapStorage.PutObject(mapPosition.X, mapPosition.Y, mapPosition.Z, ObjectInstance);
-            } else {
+            }
+            else
+            {
                 if (StackPosition > MapSizeW)
+                {
                     throw new Exception("[CreateOnMap.ParseFromNetworkMessage] Invalid position.");
-
+                }
                 Client.WorldMapStorage.InsertObject(mapPosition.X, mapPosition.Y, mapPosition.Z, StackPosition, ObjectInstance);
             }
         }
@@ -62,10 +71,13 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             message.Write(StackPosition);
             if (Id == (int)CreatureInstanceType.UnknownCreature ||
                 Id == (int)CreatureInstanceType.OutdatedCreature ||
-                Id == (int)CreatureInstanceType.Creature) {
+                Id == (int)CreatureInstanceType.Creature)
+            {
                 message.Write(Id);
                 message.Write(Creature, (CreatureInstanceType)Id);
-            } else {
+            }
+            else
+            {
                 message.Write(ObjectInstance);
             }
         }

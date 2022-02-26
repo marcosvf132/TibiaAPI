@@ -22,24 +22,36 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         public override void ParseFromNetworkMessage(NetworkMessage message)
         {
             ListRerollPrice = message.ReadUInt32();
-            AutomaticBonusReroll = message.ReadByte();
-            LockPrey = message.ReadByte();
-            TaskRerollPrice = message.ReadUInt32();
-            TaskCancelPrice = message.ReadUInt32();
-            TaskWildcards = message.ReadByte();
-            ImproveWildcardCost = message.ReadByte();
+            if (Client.VersionNumber >= 11900000)
+            {
+                AutomaticBonusReroll = message.ReadByte();
+                LockPrey = message.ReadByte();
+                if (Client.VersionNumber >= 12300000)
+                {
+                    TaskRerollPrice = message.ReadUInt32();
+                    TaskCancelPrice = message.ReadUInt32();
+                    TaskWildcards = message.ReadByte();
+                    ImproveWildcardCost = message.ReadByte();
+                }
+            }
         }
 
         public override void AppendToNetworkMessage(NetworkMessage message)
         {
             message.Write((byte)ServerPacketType.PreyPrices);
             message.Write(ListRerollPrice);
-            message.Write(AutomaticBonusReroll);
-            message.Write(LockPrey);
-            message.Write(TaskRerollPrice);
-            message.Write(TaskCancelPrice);
-            message.Write(TaskWildcards);
-            message.Write(ImproveWildcardCost);
+            if (Client.VersionNumber >= 11900000)
+            {
+                message.Write(AutomaticBonusReroll);
+                message.Write(LockPrey);
+                if (Client.VersionNumber >= 1230000)
+                {
+                    message.Write(TaskRerollPrice);
+                    message.Write(TaskCancelPrice);
+                    message.Write(TaskWildcards);
+                    message.Write(ImproveWildcardCost);
+                }
+            }
         }
     }
 }

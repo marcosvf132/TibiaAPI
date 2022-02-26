@@ -20,7 +20,9 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             CreatureId = message.ReadUInt32();
             Type = (Constants.CreatureType)message.ReadByte();
             if (Type == Constants.CreatureType.PlayerSummon)
+            {
                 SummonerId = message.ReadUInt32();
+            }
         }
 
         public override void AppendToNetworkMessage(NetworkMessage message)
@@ -29,7 +31,9 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             message.Write(CreatureId);
             message.Write((byte)Type);
             if (Type == Constants.CreatureType.PlayerSummon)
+            {
                 message.Write(SummonerId);
+            }
         }
     }
 }

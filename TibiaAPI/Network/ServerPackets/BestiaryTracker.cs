@@ -19,7 +19,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         public override void ParseFromNetworkMessage(NetworkMessage message)
         {
             Creatures.Capacity = message.ReadByte();
-            for (var i = 0; i < Creatures.Capacity; ++i) {
+            for (var i = 0; i < Creatures.Capacity; ++i)
+            {
                 var raceId = message.ReadUInt16();
                 var totalKills = message.ReadUInt32();
                 var stageOneKills = message.ReadUInt16();
@@ -35,7 +36,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             message.Write((byte)ServerPacketType.BestiaryTracker);
             var count = Math.Min(Creatures.Capacity, byte.MaxValue);
             message.Write((byte)count);
-            for (var i = 0; i < count; ++i) {
+            for (var i = 0; i < count; ++i)
+            {
                 var (RaceId, TotalKills, StageOneKills, StageTwoKills, StageThreeKills, IsComplete) = Creatures[i];
                 message.Write(RaceId);
                 message.Write(TotalKills);

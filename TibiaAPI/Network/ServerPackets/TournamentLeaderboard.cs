@@ -36,14 +36,16 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             UnknownUShort1 = message.ReadUInt16();
             Worlds.Capacity = message.ReadByte();
             for (var i = 0; i < Worlds.Capacity; ++i)
+            {
                 Worlds.Add(message.ReadString());
-			
+            }
             SelectedWorld = message.ReadString();
             RefreshRate = message.ReadUInt16();
             CurrentPage = message.ReadUInt16();
             NumberOfPages = message.ReadUInt16();
             Characters.Capacity = EntriesPerPage = message.ReadByte();
-            for (var i = 0; i < EntriesPerPage; ++i) {
+            for (var i = 0; i < EntriesPerPage; ++i)
+            {
                 var currentRank = message.ReadUInt32();
                 var previousRank = message.ReadUInt32();
                 var name = message.ReadString();
@@ -67,15 +69,17 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             var count = Math.Min(Worlds.Count, byte.MaxValue);
             message.Write((byte)count);
             for (var i = 0; i < count; ++i)
+            {
                 message.Write(Worlds[i]);
-			
+            }
             message.Write(SelectedWorld);
             message.Write(RefreshRate);
             message.Write(CurrentPage);
             message.Write(NumberOfPages);
             count = Math.Min(EntriesPerPage, Math.Min(Characters.Count, byte.MaxValue));
             message.Write((byte)count);
-            for (var i = 0; i < count; ++i) {
+            for (var i = 0; i < count; ++i)
+            {
                 message.Write(Characters[i].CurrentRank);
                 message.Write(Characters[i].PreviousRank);
                 message.Write(Characters[i].Name);
@@ -85,7 +89,6 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                 message.Write(Characters[i].IsRankChangeHighlighted);
                 message.Write(Characters[i].IsNameHighlighted);
             }
-			
             message.Write(UnknownByte1);
             message.Write(Rewards);
         }

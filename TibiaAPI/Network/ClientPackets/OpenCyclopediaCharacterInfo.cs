@@ -19,10 +19,14 @@ namespace OXGaming.TibiaAPI.Network.ClientPackets
 
         public override void ParseFromNetworkMessage(NetworkMessage message)
         {
-			PlayerId = message.ReadUInt32();
+            if (Client.VersionNumber >= 12158493)
+            {
+                PlayerId = message.ReadUInt32();
+            }
 
             State = message.ReadByte();
-            if (State == 3 || State == 4) { // Recent Deaths / Recent PvP Kills
+            if (State == 3 || State == 4) // Recent Deaths / Recent PvP Kills
+            {
                 ItemsPerPage = message.ReadUInt16();
                 RequestedPage = message.ReadUInt16();
             }
@@ -31,9 +35,13 @@ namespace OXGaming.TibiaAPI.Network.ClientPackets
         public override void AppendToNetworkMessage(NetworkMessage message)
         {
             message.Write((byte)ClientPacketType.OpenCyclopediaCharacterInfo);
-			message.Write(PlayerId);
+            if (Client.VersionNumber >= 12158493)
+            {
+                message.Write(PlayerId);
+            }
             message.Write(State);
-            if (State == 3 || State == 4) { // Recent Deaths / Recent PvP Kills
+            if (State == 3 || State == 4) // Recent Deaths / Recent PvP Kills
+            {
                 message.Write(ItemsPerPage);
                 message.Write(RequestedPage);
             }

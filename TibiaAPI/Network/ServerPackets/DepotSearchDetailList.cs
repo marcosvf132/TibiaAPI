@@ -30,20 +30,29 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             ItemId = message.ReadUInt16();
             DepotItemCount = message.ReadUInt32();
             DepotDisplayItems.Capacity = message.ReadByte();
-            for (var i = 0; i < DepotDisplayItems.Capacity; ++i) {
+            for (var i = 0; i < DepotDisplayItems.Capacity; ++i)
+            {
                 var itemId = message.ReadUInt16();
-                DepotDisplayItems.Add((itemId, byte.MinValue));
+                // This may actually be a stackable check instead of a client version check; need to verify.
+                var amount = Client.VersionNumber < 12319667 ? message.ReadByte() : byte.MinValue;
+                DepotDisplayItems.Add((itemId, amount));
             }
             InboxItemCount = message.ReadUInt32();
             InboxDisplayItems.Capacity = message.ReadByte();
-            for (var i = 0; i < InboxDisplayItems.Capacity; ++i) {
+            for (var i = 0; i < InboxDisplayItems.Capacity; ++i)
+            {
                 var itemId = message.ReadUInt16();
-                InboxDisplayItems.Add((itemId, byte.MinValue));
+                // This may actually be a stackable check instead of a client version check; need to verify.
+                var amount = Client.VersionNumber < 12319667 ? message.ReadByte() : byte.MinValue;
+                InboxDisplayItems.Add((itemId, amount));
             }
             ContainsSupplyStashItem = message.ReadBool();
-            if (ContainsSupplyStashItem) {
+            if (ContainsSupplyStashItem)
+            {
                 var itemId = message.ReadUInt16();
-                SupplyStashItem = (itemId, byte.MinValue);
+                // This may actually be a stackable check instead of a client version check; need to verify.
+                var amount = Client.VersionNumber < 12319667 ? message.ReadByte() : byte.MinValue;
+                SupplyStashItem = (itemId, amount);
             }
         }
 
@@ -53,20 +62,39 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             message.Write(DepotItemCount);
             var count = Math.Min(DepotDisplayItems.Count, byte.MaxValue);
             message.Write((byte)count);
-            for (var i = 0; i < count; ++i){
+            for (var i = 0; i < count; ++i)
+            {
                 var (itemId, amount) = DepotDisplayItems[i];
                 message.Write(itemId);
+                // This may actually be a stackable check instead of a client version check; need to verify.
+                if (Client.VersionNumber < 12319667)
+                {
+                    message.Write(amount);
+                }
             }
             message.Write(InboxItemCount);
             count = Math.Min(InboxDisplayItems.Count, byte.MaxValue);
             message.Write((byte)count);
-            for (var i = 0; i < count; ++i) {
+            for (var i = 0; i < count; ++i)
+            {
                 var (itemId, amount) = InboxDisplayItems[i];
                 message.Write(itemId);
+                // This may actually be a stackable check instead of a client version check; need to verify.
+                if (Client.VersionNumber < 12319667)
+                {
+                    message.Write(amount);
+                }
             }
             message.Write(ContainsSupplyStashItem);
             if (ContainsSupplyStashItem)
+            {
                 message.Write(SupplyStashItem.ItemId);
+                // This may actually be a stackable check instead of a client version check; need to verify.
+                if (Client.VersionNumber < 12319667)
+                {
+                    message.Write(SupplyStashItem.Amount);
+                }
+            }
         }
     }
 }

@@ -18,7 +18,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         public override void ParseFromNetworkMessage(NetworkMessage message)
         {
             ChannelList.Capacity = message.ReadByte();
-            for (var i = 0; i < ChannelList.Capacity; ++i) {
+            for (var i = 0; i < ChannelList.Capacity; ++i)
+            {
                 var id = message.ReadUInt16();
                 var name = message.ReadString();
                 ChannelList.Add((id, name));
@@ -30,7 +31,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             message.Write((byte)ServerPacketType.Channels);
             var count = Math.Min(ChannelList.Count, byte.MaxValue);
             message.Write((byte)count);
-            for (var i = 0; i < count; ++i) {
+            for (var i = 0; i < count; ++i)
+            {
                 var (Id, Name) = ChannelList[i];
                 message.Write(Id);
                 message.Write(Name);

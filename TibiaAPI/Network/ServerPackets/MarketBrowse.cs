@@ -25,11 +25,15 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
            BuyOffers.Capacity = (int)message.ReadUInt32();
            for (uint i = 0; i < BuyOffers.Capacity; ++i)
+           {
                BuyOffers.Add(message.ReadMarketOffer((int)MarketOfferType.Buy, TypeId));
+           }
 
            SellOffers.Capacity = (int)message.ReadUInt32();
            for (uint i = 0; i < SellOffers.Capacity; ++i)
+           {
                SellOffers.Add(message.ReadMarketOffer((int)MarketOfferType.Sell, TypeId));
+           }
         }
 
         public override void AppendToNetworkMessage(NetworkMessage message)
@@ -40,12 +44,16 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
            var count = Math.Min(BuyOffers.Count, uint.MaxValue);
            message.Write((uint)count);
            for (var i = 0; i < count; ++i)
+           {
                message.Write(BuyOffers[i], TypeId);
+           }
 
            count = Math.Min(SellOffers.Count, uint.MaxValue);
            message.Write((uint)count);
            for (var i = 0; i < count; ++i)
+           {
                message.Write(SellOffers[i], TypeId);
+           }
         }
     }
 }

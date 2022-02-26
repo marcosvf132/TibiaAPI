@@ -36,7 +36,9 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
             GroupsIds.Capacity = message.ReadByte();
             for (var i = 0; i < GroupsIds.Capacity; ++i)
+            {
                 GroupsIds.Add(message.ReadByte());
+            }
         }
 
         public override void AppendToNetworkMessage(NetworkMessage message)
@@ -52,7 +54,9 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             var count = Math.Min(GroupsIds.Count, byte.MaxValue);
             message.Write((byte)count);
             for (var i = 0; i < count; ++i)
+            {
                 message.Write(GroupsIds[i]);
+            }
         }
     }
 }

@@ -30,7 +30,10 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             MaxTextLength = message.ReadUInt16();
             Text = message.ReadString();
             Author = message.ReadString();
-            Unknown = message.ReadByte();
+            if (Client.VersionNumber >= 125010109)
+            {
+                Unknown = message.ReadByte();
+            }
             Date = message.ReadString();
         }
 
@@ -42,7 +45,10 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             message.Write(MaxTextLength);
             message.Write(Text);
             message.Write(Author);
-            message.Write(Unknown);
+            if (Client.VersionNumber >= 125010109)
+            {
+                message.Write(Unknown);
+            }
             message.Write(Date);
         }
     }

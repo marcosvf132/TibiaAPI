@@ -27,13 +27,16 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             TypeId = message.ReadUInt16();
 
             foreach (MarketDetailField value in Enum.GetValues(typeof(MarketDetailField)))
+            {
                 Details.Add(value, message.ReadString());
+            }
 
             var timestamp = (uint)DateTimeOffset.UtcNow.ToUnixTimeSeconds() * 86400;
             var tempTimestamp = timestamp;
 
             BuyStatistics.Capacity = message.ReadByte();
-            for (var i = 0; i < BuyStatistics.Capacity; ++i) {
+            for (var i = 0; i < BuyStatistics.Capacity; ++i)
+            {
                 tempTimestamp -= 86400;
                 var totalTransactions = message.ReadUInt32();
                 var totalPrice = message.ReadUInt32();
@@ -45,7 +48,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             tempTimestamp = timestamp;
 
             SellStatistics.Capacity = message.ReadByte();
-            for (var i = 0; i < SellStatistics.Capacity; ++i) {
+            for (var i = 0; i < SellStatistics.Capacity; ++i)
+            {
                 tempTimestamp -= 86400;
                 var totalTransactions = message.ReadUInt32();
                 var totalPrice = message.ReadUInt32();
@@ -60,16 +64,22 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             message.Write((byte)ServerPacketType.MarketDetail);
             message.Write(TypeId);
 
-            foreach (MarketDetailField value in Enum.GetValues(typeof(MarketDetailField))) {
+            foreach (MarketDetailField value in Enum.GetValues(typeof(MarketDetailField)))
+            {
                 if (Details.ContainsKey(value))
+                {
                     message.Write(Details[value]);
+                }
                 else
+                {
                     message.Write(string.Empty);
+                }
             }
 
             var count = Math.Min(BuyStatistics.Count, byte.MaxValue);
             message.Write((byte)count);
-            for (var i = 0; i < BuyStatistics.Count; ++i) {
+            for (var i = 0; i < BuyStatistics.Count; ++i)
+            {
                 var (TotalTransactions, TotalPrice, MaximumPrice, MinimumPrice) = BuyStatistics[i];
                 message.Write(TotalTransactions);
                 message.Write(TotalPrice);
@@ -79,7 +89,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
             count = Math.Min(SellStatistics.Count, byte.MaxValue);
             message.Write((byte)count);
-            for (var i = 0; i < SellStatistics.Count; ++i) {
+            for (var i = 0; i < SellStatistics.Count; ++i)
+            {
                 var (TotalTransactions, TotalPrice, MaximumPrice, MinimumPrice) = SellStatistics[i];
                 message.Write(TotalTransactions);
                 message.Write(TotalPrice);

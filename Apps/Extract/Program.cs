@@ -595,6 +595,14 @@ namespace Extract
                             Size = size
                         };
 
+                        // Tibia10 recordings seem to contain login data (worlds, characters, etc.)
+                        // in their first packet. We don't parse this, and we don't need to, so skip it.
+                        if (_client.VersionNumber <= 11405409 && sequenceNumber == 0 && reader.PeekChar() == 0x28)
+                        {
+                            reader.BaseStream.Position += size - 8;
+                            continue;
+                        }
+
                         reader.BaseStream.Position -= 8;
 
                         Array.Copy(reader.ReadBytes((int)message.Size), message.GetBuffer(), message.Size);
@@ -660,12 +668,15 @@ namespace Extract
 
         private static bool Connection_OnReceivedClientLookPacket(Packet packet)
         {
-            if (_extractLookItemText) {
+            if (_extractLookItemText)
+            {
                 var p = (Look)packet;
                 // This packet should only be used for items (`LookAtCreature` should be used for creatures),
                 // but check the ID to ensure this is an item being looked at.
                 if (p.ObjectId >= 100)
+                {
                     _lastLookItemPacket = p;
+                }
             }
             return true;
         }
@@ -678,7 +689,8 @@ namespace Extract
             // or the player could have teleported during their session, there's
             // a chance the recording could contain multiple FullMap packets.
             // In this case, use the same .otbm file for outputting.
-            if (_extractMapData && _otbmFile == null) {
+            if (_extractMapData && _otbmFile == null)
+            {
                 Console.WriteLine($"Extracting map data... ");
                 var pos = p.Position;
                 var currentDate = DateTime.UtcNow;
@@ -690,37 +702,56 @@ namespace Extract
                 var otbmName = string.Format("{0}__{1}_{2}_{3}__{4}_{5}_{6}__{7}_{8}_{9}", fileNameData);
                 var outputPath = $"{otbmName}.otbm";
                 if (!string.IsNullOrEmpty(_outDirectory))
+                {
                     outputPath = Path.Combine(_outDirectory, outputPath);
+                }
 
                 _otbmFile = InitializeMapFile(otbmName, outputPath);
             }
 
-            foreach (var (_, _, position) in p.Fields) {
+            foreach (var (_, _, position) in p.Fields)
+            {
                 if (_extractMapData)
+                {
                     ParseField(position);
+                }
 
                 var mapPosition = _client.WorldMapStorage.ToMap(position);
                 var field = _client.WorldMapStorage.GetField(mapPosition.X, mapPosition.Y, mapPosition.Z);
-                if (field != null) {
-                    for (var i = 0; i < MapSizeW; ++i) {
+                if (field != null)
+                {
+                    for (var i = 0; i < MapSizeW; ++i)
+                    {
                         var obj = field.GetObject(i);
                         if (obj == null)
+                        {
                             continue;
+                        }
 
-                        if (_extractItemData && obj.Id > (int)CreatureInstanceType.Creature) {
+                        if (_extractItemData && obj.Id > (int)CreatureInstanceType.Creature)
+                        {
                             _itemFile.WriteLine($"{obj.Id} {position.ToString()}");
-                        } else if (obj.Id <= (int)CreatureInstanceType.Creature) {
+                        }
+                        else if (obj.Id <= (int)CreatureInstanceType.Creature)
+                        {
                             var creature = _client.CreatureStorage.GetCreature(obj.Data);
                             if (creature == null)
+                            {
                                 continue;
+                            }
 
                             if (_extractSpawns)
+                            {
                                 AddSpawnEntry(creature);
+                            }
 
-                            if (_extractMonsterData && creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Monster && !_knownMonsterIds.Contains(creature.Id)) {
+                            if (_extractMonsterData && creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Monster && !_knownMonsterIds.Contains(creature.Id))
+                            {
                                 _monsterFile.WriteLine($"{creature.Name} {creature.Position}");
                                 _knownMonsterIds.Add(creature.Id);
-                            } else if (_extractNpcData && creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Npc && !_knownNpcIds.Contains(creature.Id)) {
+                            }
+                            else if (_extractNpcData && creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Npc && !_knownNpcIds.Contains(creature.Id))
+                            {
                                 _npcFile.WriteLine($"{creature.Name} {creature.Position}");
                                 _knownNpcIds.Add(creature.Id);
                             }
@@ -734,14 +765,20 @@ namespace Extract
         private static bool Connection_OnReceivedServerCreatureDataPacket(Packet packet)
         {
             var p = (CreatureData)packet;
-            if (p.Creature != null) {
+            if (p.Creature != null)
+            {
                 if (_extractSpawns)
+                {
                     AddSpawnEntry(p.Creature);
+                }
 
-                if (_extractMonsterData && p.Creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Monster && !_knownMonsterIds.Contains(p.Creature.Id)) {
+                if (_extractMonsterData && p.Creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Monster && !_knownMonsterIds.Contains(p.Creature.Id))
+                {
                     _monsterFile.WriteLine($"{p.Creature.Name} {p.Creature.Position}");
                     _knownMonsterIds.Add(p.Creature.Id);
-                } else if (_extractNpcData && p.Creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Npc && !_knownNpcIds.Contains(p.Creature.Id)) {
+                }
+                else if (_extractNpcData && p.Creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Npc && !_knownNpcIds.Contains(p.Creature.Id))
+                {
                     _npcFile.WriteLine($"{p.Creature.Name} {p.Creature.Position}");
                     _knownNpcIds.Add(p.Creature.Id);
                 }
@@ -752,16 +789,24 @@ namespace Extract
         private static bool Connection_OnReceivedServerChangeOnMapPacket(Packet packet)
         {
             var p = (ChangeOnMap)packet;
-            if (_extractItemData && p.ObjectInstance != null && p.Id > (int)CreatureInstanceType.Creature) {
+            if (_extractItemData && p.ObjectInstance != null && p.Id > (int)CreatureInstanceType.Creature)
+            {
                 _itemFile.WriteLine($"{p.ObjectInstance.Id} {p.Position.ToString()}");
-            } else if (p.Creature != null) {
+            }
+            else if (p.Creature != null)
+            {
                 if (_extractSpawns)
+                {
                     AddSpawnEntry(p.Creature);
+                }
 
-                if (_extractMonsterData && p.Creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Monster && !_knownMonsterIds.Contains(p.Creature.Id)) {
+                if (_extractMonsterData && p.Creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Monster && !_knownMonsterIds.Contains(p.Creature.Id))
+                {
                     _monsterFile.WriteLine($"{p.Creature.Name} {p.Creature.Position}");
                     _knownMonsterIds.Add(p.Creature.Id);
-                } else if (_extractNpcData && p.Creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Npc && !_knownNpcIds.Contains(p.Creature.Id)) {
+                }
+                else if (_extractNpcData && p.Creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Npc && !_knownNpcIds.Contains(p.Creature.Id))
+                {
                     _npcFile.WriteLine($"{p.Creature.Name} {p.Creature.Position}");
                     _knownNpcIds.Add(p.Creature.Id);
                 }
@@ -772,16 +817,24 @@ namespace Extract
         private static bool Connection_OnReceivedServerCreateOnMapPacket(Packet packet)
         {
             var p = (CreateOnMap)packet;
-            if (_extractItemData && p.ObjectInstance != null && p.Id > (int)CreatureInstanceType.Creature) {
+            if (_extractItemData && p.ObjectInstance != null && p.Id > (int)CreatureInstanceType.Creature)
+            {
                 _itemFile.WriteLine($"{p.ObjectInstance.Id} {p.Position.ToString()}");
-            } else if (p.Creature != null) {
+            }
+            else if (p.Creature != null)
+            {
                 if (_extractSpawns)
+                {
                     AddSpawnEntry(p.Creature);
+                }
 
-                if (_extractMonsterData && p.Creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Monster && !_knownMonsterIds.Contains(p.Creature.Id)) {
+                if (_extractMonsterData && p.Creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Monster && !_knownMonsterIds.Contains(p.Creature.Id))
+                {
                     _monsterFile.WriteLine($"{p.Creature.Name} {p.Creature.Position}");
                     _knownMonsterIds.Add(p.Creature.Id);
-                } else if (_extractNpcData && p.Creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Npc && !_knownNpcIds.Contains(p.Creature.Id)) {
+                }
+                else if (_extractNpcData && p.Creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Npc && !_knownNpcIds.Contains(p.Creature.Id))
+                {
                     _npcFile.WriteLine($"{p.Creature.Name} {p.Creature.Position}");
                     _knownNpcIds.Add(p.Creature.Id);
                 }
@@ -792,31 +845,48 @@ namespace Extract
         static bool Connection_OnReceivedMapPacket(Packet packet)
         {
             var p = (Map)packet;
-            foreach (var (_, _, position) in p.Fields) {
+            foreach (var (_, _, position) in p.Fields)
+            {
                 if (_extractMapData)
+                {
                     ParseField(position);
+                }
 
                 var field = _client.WorldMapStorage.GetField(position.X, position.Y, position.Z);
-                if (field != null) {
-                    for (var i = 0; i < MapSizeW; ++i) {
+                if (field != null)
+                {
+                    for (var i = 0; i < MapSizeW; ++i)
+                    {
                         var obj = field.GetObject(i);
                         if (obj == null)
+                        {
                             continue;
+                        }
 
-                        if (_extractItemData && obj.Id > (int)CreatureInstanceType.Creature) {
+                        if (_extractItemData && obj.Id > (int)CreatureInstanceType.Creature)
+                        {
                             _itemFile.WriteLine($"{obj.Id} {position.ToString()}");
-                        } else if (obj.Id <= (int)CreatureInstanceType.Creature) {
+                        }
+                        else if (obj.Id <= (int)CreatureInstanceType.Creature)
+                        {
                             var creature = _client.CreatureStorage.GetCreature(obj.Data);
                             if (creature == null)
+                            {
                                 continue;
+                            }
 
                             if (_extractSpawns)
+                            {
                                 AddSpawnEntry(creature);
+                            }
 
-                            if (_extractMonsterData && creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Monster && !_knownMonsterIds.Contains(creature.Id)) {
+                            if (_extractMonsterData && creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Monster && !_knownMonsterIds.Contains(creature.Id))
+                            {
                                 _monsterFile.WriteLine($"{creature.Name} {creature.Position}");
                                 _knownMonsterIds.Add(creature.Id);
-                            } else if (_extractNpcData && creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Npc && !_knownNpcIds.Contains(creature.Id)) {
+                            }
+                            else if (_extractNpcData && creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Npc && !_knownNpcIds.Contains(creature.Id))
+                            {
                                 _npcFile.WriteLine($"{creature.Name} {creature.Position}");
                                 _knownNpcIds.Add(creature.Id);
                             }
@@ -880,9 +950,12 @@ namespace Extract
 
         static void WriteData(FileStream file, byte[] data)
         {
-            for (int i = 0; i < data.Length; ++i) {
+            for (int i = 0; i < data.Length; ++i)
+            {
                 if (data[i] == 253 || data[i] == 254 || data[i] == 255)
+                {
                     file.WriteByte(253);
+                }
 
                 file.WriteByte(data[i]);
             }
@@ -892,7 +965,9 @@ namespace Extract
         {
             var index = (ulong)((position.Z * 40959 * 40959) + (position.Y * 40959) + position.X);
             if (_knownPositions.Contains(index))
+            {
                 return;
+            }
 
             _knownPositions.Add(index);
 
@@ -915,11 +990,15 @@ namespace Extract
 
             var mapPosition = _client.WorldMapStorage.ToMap(position);
             var field = _client.WorldMapStorage.GetField(mapPosition.X, mapPosition.Y, mapPosition.Z);
-            if (field != null) {
-                for (int i = 0; i < MapSizeW; ++i) {
+            if (field != null)
+            {
+                for (int i = 0; i < MapSizeW; ++i)
+                {
                     var item = field.GetObject(i);
                     if (item == null || item.Id < 100 || _ignoreIds.Contains(item.Id))
+                    {
                         continue;
+                    }
 
                     // node item
                     _otbmFile.WriteByte(254);
@@ -927,26 +1006,31 @@ namespace Extract
 
                     // item id
                     if (!_replaceIds.TryGetValue(item.Id, out uint id))
+                    {
                         id = item.Id;
-
+                    }
                     if (_clientToServerIds.TryGetValue((ushort)id, out var serverId))
+                    {
                         id = serverId;
-
+                    }
                     WriteData(_otbmFile, BitConverter.GetBytes((ushort)id));
 
                     // item data
-                    if (item.Type != null && item.Type.Flags.Cumulative) {
+                    if (item.Type != null && item.Type.Flags.Cumulative)
+                    {
                         _otbmFile.WriteByte(15);
                         WriteData(_otbmFile, new byte[] { (byte)item.Data });
                     }
 
                     // item sub type
-                    if (item.Type != null && (item.Type.Flags.Liquidcontainer || item.Type.Flags.Liquidpool)) {
+                    if (item.Type != null && (item.Type.Flags.Liquidcontainer || item.Type.Flags.Liquidpool))
+                    {
                         _otbmFile.WriteByte(15);
                         byte subType = 0;
                         if (Enum.IsDefined(typeof(FluidType), (int)item.Data))
+                        {
                             subType = (byte)item.Data;
-
+                        }
                         WriteData(_otbmFile, new byte[] { subType });
                     }
 

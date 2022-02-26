@@ -32,7 +32,9 @@ namespace OXGaming.TibiaAPI.WorldMap
 
             field = new List<Field>(NumFields);
             for (var i = 0; i < NumFields; ++i)
+            {
                 field.Add(new Field());
+            }
 
             playerZPlane = 0;
         }
@@ -281,12 +283,15 @@ namespace OXGaming.TibiaAPI.WorldMap
         public Position ToMap(Position pos)
         {
             if (pos == null)
+            {
                 throw new ArgumentNullException(nameof(pos));
+            }
 
             var mapPosition = ToMapInternal(pos);
             if (mapPosition == null)
+            {
                 throw new ArgumentException("WorldMapStorage.ToMap: Input co-ordinate " + pos + " is out of range.");
-
+            }
             return mapPosition;
         }
 
@@ -298,7 +303,9 @@ namespace OXGaming.TibiaAPI.WorldMap
         Position ToMapInternal(Position pos)
         {
             if (pos == null)
+            {
                 return null;
+            }
 
             var z = position.Z - pos.Z;
             var x = pos.X - (position.X - PlayerOffsetX) - z;
@@ -306,8 +313,9 @@ namespace OXGaming.TibiaAPI.WorldMap
             z += playerZPlane;
 
             if (x < 0 || x >= MapSizeX || y < 0 || y >= MapSizeY || z < 0 || z >= MapSizeZ)
+            {
                 return null;
-
+            }
             return new Position(x, y, z);
         }
     }

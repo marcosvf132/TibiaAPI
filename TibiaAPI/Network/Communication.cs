@@ -167,13 +167,13 @@ namespace OXGaming.TibiaAPI.Network
         public event ReceivedPacketEventHandler OnReceivedServerLoginAdvicePacket;
         public event ReceivedPacketEventHandler OnReceivedServerLoginWaitPacket;
         public event ReceivedPacketEventHandler OnReceivedServerLoginSuccessPacket;
-        public event ReceivedPacketEventHandler OnReceivedServerLogoutSessionPacket;
         public event ReceivedPacketEventHandler OnReceivedServerStoreButtonIndicatorsPacket;
         public event ReceivedPacketEventHandler OnReceivedServerPingPacket;
         public event ReceivedPacketEventHandler OnReceivedServerPingBackPacket;
         public event ReceivedPacketEventHandler OnReceivedServerLoginChallengePacket;
         public event ReceivedPacketEventHandler OnReceivedServerDeadPacket;
         public event ReceivedPacketEventHandler OnReceivedServerStashPacket;
+        public event ReceivedPacketEventHandler OnReceivedServerDepotTileStatePacket;
         public event ReceivedPacketEventHandler OnReceivedServerPartyHuntAnalyserPacket;
         public event ReceivedPacketEventHandler OnReceivedServerSpecialContainersAvailablePacket;
         public event ReceivedPacketEventHandler OnReceivedServerTeamFinderTeamLeaderPacket;
@@ -221,6 +221,7 @@ namespace OXGaming.TibiaAPI.Network
         public event ReceivedPacketEventHandler OnReceivedServerCreaturePartyPacket;
         public event ReceivedPacketEventHandler OnReceivedServerCreatureUnpassPacket;
         public event ReceivedPacketEventHandler OnReceivedServerCreatureMarksPacket;
+        public event ReceivedPacketEventHandler OnReceivedServerCreaturePvpHelpersPacket;
         public event ReceivedPacketEventHandler OnReceivedServerDepotSearchResultsPacket;
         public event ReceivedPacketEventHandler OnReceivedServerCreatureTypePacket;
         public event ReceivedPacketEventHandler OnReceivedServerEditTextPacket;
@@ -290,6 +291,7 @@ namespace OXGaming.TibiaAPI.Network
         public event ReceivedPacketEventHandler OnReceivedServerHirelingNameChangePacket;
         public event ReceivedPacketEventHandler OnReceivedServerTutorialHintPacket;
         public event ReceivedPacketEventHandler OnReceivedServerCyclopediaMapDataPacket;
+        public event ReceivedPacketEventHandler OnReceivedServerAutomapFlagPacket;
         public event ReceivedPacketEventHandler OnReceivedServerDailyRewardCollectionStatePacket;
         public event ReceivedPacketEventHandler OnReceivedServerCreditBalancePacket;
         public event ReceivedPacketEventHandler OnReceivedServerIngameShopErrorPacket;
@@ -320,6 +322,7 @@ namespace OXGaming.TibiaAPI.Network
         public event ReceivedPacketEventHandler OnReceivedServerMarketBrowsePacket;
         public event ReceivedPacketEventHandler OnReceivedServerShowModalDialogPacket;
         public event ReceivedPacketEventHandler OnReceivedServerStoreCategoriesPacket;
+        public event ReceivedPacketEventHandler OnReceivedServerPremiumShopPacket;
         public event ReceivedPacketEventHandler OnReceivedServerStoreOffersPacket;
         public event ReceivedPacketEventHandler OnReceivedServerTransactionHistoryPacket;
         public event ReceivedPacketEventHandler OnReceivedServerStoreSuccessPacket;
@@ -849,12 +852,14 @@ namespace OXGaming.TibiaAPI.Network
         public void ParseServerMessage(Client client, NetworkMessage inMessage, NetworkMessage outMessage)
         {
             if (inMessage == null)
+            {
                 throw new ArgumentNullException(nameof(inMessage));
-            
+            }
 
             if (outMessage == null)
+            {
                 throw new ArgumentNullException(nameof(outMessage));
-            
+            }
 
             var packets = new List<(ServerPacketType PacketType, uint Position)>();
             var packetPosition = 0u;
@@ -865,9 +870,12 @@ namespace OXGaming.TibiaAPI.Network
             try
             {
                 if (client.Logger.Level == Logger.LogLevel.Debug)
+                {
                     packetData = inMessage.GetData();
+                }
 
-                while (inMessage.Position < inMessage.Size) {
+                while (inMessage.Position < inMessage.Size)
+                {
                     packetPosition = inMessage.Position;
 
                     var opcode = inMessage.ReadByte();
@@ -878,7 +886,8 @@ namespace OXGaming.TibiaAPI.Network
                     var packet = ServerPacket.CreateInstance(client, currentPacket);
                     packet.ParseFromNetworkMessage(inMessage);
 
-                    switch (currentPacket) {
+                    switch (currentPacket)
+                    {
                         case ServerPacketType.CreatureData:
                             packet.Forward = OnReceivedServerCreatureDataPacket?.Invoke(packet) ?? true;
                             break;
@@ -906,9 +915,6 @@ namespace OXGaming.TibiaAPI.Network
                         case ServerPacketType.LoginSuccess:
                             packet.Forward = OnReceivedServerLoginSuccessPacket?.Invoke(packet) ?? true;
                             break;
-                        case ServerPacketType.LogoutSession:
-                            packet.Forward = OnReceivedServerLogoutSessionPacket?.Invoke(packet) ?? true;
-                            break;
                         case ServerPacketType.StoreButtonIndicators:
                             packet.Forward = OnReceivedServerStoreButtonIndicatorsPacket?.Invoke(packet) ?? true;
                             break;
@@ -928,13 +934,27 @@ namespace OXGaming.TibiaAPI.Network
                             packet.Forward = OnReceivedServerStashPacket?.Invoke(packet) ?? true;
                             break;
                         case ServerPacketType.SpecialContainersAvailable:
-                            packet.Forward = OnReceivedServerSpecialContainersAvailablePacket?.Invoke(packet) ?? true;
+                            if (client.VersionNumber >= 12300000)
+                            {
+                                packet.Forward = OnReceivedServerSpecialContainersAvailablePacket?.Invoke(packet) ?? true;
+                            }
+                            else
+                            {
+                                packet.Forward = OnReceivedServerDepotTileStatePacket?.Invoke(packet) ?? true;
+                            }
                             break;
                         case ServerPacketType.PartyHuntAnalyser:
                             packet.Forward = OnReceivedServerPartyHuntAnalyserPacket?.Invoke(packet) ?? true;
                             break;
                         case ServerPacketType.TeamFinderTeamLeader:
-                            packet.Forward = OnReceivedServerTeamFinderTeamLeaderPacket?.Invoke(packet) ?? true;
+                            if (client.VersionNumber >= 12400000)
+                            {
+                                packet.Forward = OnReceivedServerTeamFinderTeamLeaderPacket?.Invoke(packet) ?? true;
+                            }
+                            else
+                            {
+                                packet.Forward = OnReceivedServerSpecialContainersAvailablePacket?.Invoke(packet) ?? true;
+                            }
                             break;
                         case ServerPacketType.TeamFinderTeamMember:
                             packet.Forward = OnReceivedServerTeamFinderTeamMemberPacket?.Invoke(packet) ?? true;
@@ -1069,7 +1089,14 @@ namespace OXGaming.TibiaAPI.Network
                             packet.Forward = OnReceivedServerCreatureMarksPacket?.Invoke(packet) ?? true;
                             break;
                         case ServerPacketType.DepotSearchResults:
-                            packet.Forward = OnReceivedServerDepotSearchResultsPacket?.Invoke(packet) ?? true;
+                            if (client.VersionNumber >= 12200000)
+                            {
+                                packet.Forward = OnReceivedServerDepotSearchResultsPacket?.Invoke(packet) ?? true;
+                            }
+                            else
+                            {
+                                packet.Forward = OnReceivedServerCreaturePvpHelpersPacket?.Invoke(packet) ?? true;
+                            }
                             break;
                         case ServerPacketType.CreatureType:
                             packet.Forward = OnReceivedServerCreatureTypePacket?.Invoke(packet) ?? true;
@@ -1273,7 +1300,16 @@ namespace OXGaming.TibiaAPI.Network
                             packet.Forward = OnReceivedServerTutorialHintPacket?.Invoke(packet) ?? true;
                             break;
                         case ServerPacketType.CyclopediaMapData:
-                            packet.Forward = OnReceivedServerCyclopediaMapDataPacket?.Invoke(packet) ?? true;
+                            {
+                                if (client.VersionNumber >= 11800000)
+                                {
+                                    packet.Forward = OnReceivedServerCyclopediaMapDataPacket?.Invoke(packet) ?? true;
+                                }
+                                else
+                                {
+                                    packet.Forward = OnReceivedServerAutomapFlagPacket?.Invoke(packet) ?? true;
+                                }
+                            }
                             break;
                         case ServerPacketType.DailyRewardCollectionState:
                             packet.Forward = OnReceivedServerDailyRewardCollectionStatePacket?.Invoke(packet) ?? true;
@@ -1363,7 +1399,16 @@ namespace OXGaming.TibiaAPI.Network
                             packet.Forward = OnReceivedServerShowModalDialogPacket?.Invoke(packet) ?? true;
                             break;
                         case ServerPacketType.StoreCategories:
-                            packet.Forward = OnReceivedServerStoreCategoriesPacket?.Invoke(packet) ?? true;
+                            {
+                                if (client.VersionNumber >= 11600000)
+                                {
+                                    packet.Forward = OnReceivedServerStoreCategoriesPacket?.Invoke(packet) ?? true;
+                                }
+                                else
+                                {
+                                    packet.Forward = OnReceivedServerPremiumShopPacket?.Invoke(packet) ?? true;
+                                }
+                            }
                             break;
                         case ServerPacketType.StoreOffers:
                             packet.Forward = OnReceivedServerStoreOffersPacket?.Invoke(packet) ?? true;
@@ -1382,19 +1427,24 @@ namespace OXGaming.TibiaAPI.Network
                     }
 
                     if (packet.Forward && client.Connection.IsServerPacketModificationEnabled)
+                    {
                         packet.AppendToNetworkMessage(outMessage);
+                    }
 
                     packets.Add((currentPacket, packetPosition));
                     lastKnownPacket = currentPacket;
 
-                    if (client.Logger.Level == Logger.LogLevel.Debug && packetData != null) {
+                    if (client.Logger.Level == Logger.LogLevel.Debug && packetData != null)
+                    {
                         var len = inMessage.Position - packetPosition;
                         var data = new byte[len];
                         Array.Copy(packetData, packetPosition, data, 0, len);
                         client.Logger.Debug($"{BitConverter.ToString(data).Replace('-', ' ')}");
                     }
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 // Parsing failures are helpful when looking for packet changes or trying to understand
                 // the structure of a new packet. Because of that, it's better to log as much data as
                 // possible and continue.

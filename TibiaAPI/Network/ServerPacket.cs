@@ -32,8 +32,6 @@ namespace OXGaming.TibiaAPI.Network
                     return new ServerPackets.LoginWait(client);
                 case ServerPacketType.LoginSuccess:
                     return new ServerPackets.LoginSuccess(client);
-                case ServerPacketType.LogoutSession:
-                    return new ServerPackets.LogoutSession(client);
                 case ServerPacketType.StoreButtonIndicators:
                     return new ServerPackets.StoreButtonIndicators(client);
                 case ServerPacketType.Ping:
@@ -47,7 +45,14 @@ namespace OXGaming.TibiaAPI.Network
                 case ServerPacketType.Stash:
                     return new ServerPackets.Stash(client);
                 case ServerPacketType.SpecialContainersAvailable:
-                    return new ServerPackets.SpecialContainersAvailable(client);
+                    if (client.VersionNumber >= 12400000)
+                    {
+                        return new ServerPackets.SpecialContainersAvailable(client);
+                    }
+                    else
+                    {
+                        return new ServerPackets.DepotTileState(client);
+                    }
                 case ServerPacketType.PartyHuntAnalyser:
                     return new ServerPackets.PartyHuntAnalyser(client);
                 case ServerPacketType.TeamFinderTeamLeader:

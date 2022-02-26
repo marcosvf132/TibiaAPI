@@ -33,14 +33,16 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             Text = message.ReadString();
 
             FirstChoices.Capacity = message.ReadByte();
-            for (var i = 0; i < FirstChoices.Capacity; ++i) {
+            for (var i = 0; i < FirstChoices.Capacity; ++i)
+            {
                 var label = message.ReadString();
                 var value = message.ReadByte();
                 FirstChoices.Add((label, value));
             }
 
             SecondChoices.Capacity = message.ReadByte();
-            for (var i = 0; i < SecondChoices.Capacity; ++i) {
+            for (var i = 0; i < SecondChoices.Capacity; ++i)
+            {
                 var label = message.ReadString();
                 var value = message.ReadByte();
                 SecondChoices.Add((label, value));
@@ -60,7 +62,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
             var count = Math.Min(FirstChoices.Count, byte.MaxValue);
             message.Write((byte)count);
-            for (var i = 0; i < count; ++i) {
+            for (var i = 0; i < count; ++i)
+            {
                 var choice = FirstChoices[i];
                 message.Write(choice.Label);
                 message.Write(choice.Value);
@@ -68,7 +71,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
             count = Math.Min(SecondChoices.Count, byte.MaxValue);
             message.Write((byte)count);
-            for (var i = 0; i < count; ++i) {
+            for (var i = 0; i < count; ++i)
+            {
                 var choice = SecondChoices[i];
                 message.Write(choice.Label);
                 message.Write(choice.Value);

@@ -43,15 +43,21 @@ namespace Watch
 
         static void ParseArgs(string[] args)
         {
-            foreach (var arg in args) {
+            foreach (var arg in args)
+            {
                 if (!arg.Contains('=', StringComparison.CurrentCultureIgnoreCase))
+                {
                     continue;
+                }
 
                 var splitArg = arg.Split('=');
                 if (splitArg.Length != 2)
+                {
                     continue;
+                }
 
-                switch (splitArg[0]) {
+                switch (splitArg[0])
+                {
                     case "-r":
                     case "--recording":
                         {
@@ -85,14 +91,16 @@ namespace Watch
 
         static void Main(string[] args)
         {
-            if (args.Length <= 0) {
+            if (args.Length <= 0)
+            {
                 Console.WriteLine($"Invalid number of arguments: {args.Length}");
                 return;
             }
 
             ParseArgs(args);
 
-            if (string.IsNullOrEmpty(_recordingName) || !_recordingName.EndsWith(".oxr", StringComparison.CurrentCultureIgnoreCase)) {
+            if (string.IsNullOrEmpty(_recordingName) || !_recordingName.EndsWith(".oxr", StringComparison.CurrentCultureIgnoreCase))
+            {
                 Console.WriteLine($"Invalid recording file: {_recordingName ?? "null"}");
                 return;
             }
@@ -114,22 +122,27 @@ namespace Watch
                 _clientBuffer = new byte[NetworkMessage.MaxMessageSize];
 
                 if (_tcpListener == null)
+                {
                     _tcpListener = new TcpListener(IPAddress.Loopback, 0);
+                }
 
                 _httpListener = new HttpListener();
                 var uriPrefix = $"http://127.0.0.1:{_httpPort}/";
-				
-                // The HTTP listener must be listening on port 80 as the
-                // Tibia client sends HTTP requests over port 80.
                 if (!_httpListener.Prefixes.Contains(uriPrefix))
+                {
+                    // The HTTP listener must be listening on port 80 as the
+                    // Tibia client sends HTTP requests over port 80.
                     _httpListener.Prefixes.Add(uriPrefix);
+                }
 
                 _httpListener.Start();
                 _httpListener.BeginGetContext(new AsyncCallback(BeginGetContextCallback), _httpListener);
 
                 _tcpListener.Start();
                 _tcpListener.BeginAcceptSocket(new AsyncCallback(BeginAcceptTcpClientCallback), _tcpListener);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 Console.WriteLine(ex);
             }
         }
@@ -137,7 +150,9 @@ namespace Watch
         static void Reset()
         {
             if (_clientSocket != null)
+            {
                 _clientSocket.Close();
+            }
 
             _userQuit |= _clientSendThread != null || _clientSendThread.IsAlive;
             _xteaKey = null;
@@ -145,10 +160,13 @@ namespace Watch
 
         static void BeginGetContextCallback(IAsyncResult ar)
         {
-            try {
+            try
+            {
                 var httpListener = (HttpListener)ar.AsyncState;
                 if (httpListener == null)
+                {
                     throw new Exception("[Connection.BeginGetContextCallback] HTTP listener is null.");
+                }
 
                 var context = httpListener.EndGetContext(ar);
                 var request = context.Request;
@@ -160,7 +178,9 @@ namespace Watch
                 }
 
                 if (string.IsNullOrEmpty(clientRequest))
+                {
                     throw new Exception($"[Connection.BeginGetContextCallback] Invalid HTTP request data: {clientRequest ?? "null"}");
+                }
 
                 var filename = Path.GetFileNameWithoutExtension(_recordingName);
                 var address = ((IPEndPoint)_tcpListener.LocalEndpoint).Address.ToString();
@@ -217,44 +237,59 @@ namespace Watch
                 context.Response.Close();
 
                 _httpListener.BeginGetContext(new AsyncCallback(BeginGetContextCallback), _httpListener);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 Console.WriteLine(ex);
             }
         }
 
         static void BeginAcceptTcpClientCallback(IAsyncResult ar)
         {
-            try {
+            try
+            {
                 var tcpListener = (TcpListener)ar.AsyncState;
                 if (tcpListener == null)
+                {
                     throw new Exception("[Connection.BeginAcceptTcpClientCallback] TCP client is null.");
+                }
 
                 _clientSocket = tcpListener.EndAcceptSocket(ar);
                 _clientSocket.LingerState = new LingerOption(true, 2);
                 _clientSocket.BeginReceive(_clientBuffer, 0, 1, SocketFlags.None, new AsyncCallback(BeginReceiveWorldNameCallback), null);
 
                 _tcpListener.BeginAcceptSocket(new AsyncCallback(BeginAcceptTcpClientCallback), _tcpListener);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 Console.WriteLine(ex);
             }
         }
 
         static void BeginReceiveWorldNameCallback(IAsyncResult ar)
         {
-            try {
+            try
+            {
                 if (_clientSocket == null)
+                {
                     return;
+                }
 
                 var count = _clientSocket.EndReceive(ar);
                 if (count <= 0)
+                {
                     return;
+                }
 
                 // The first message the client sends to the game server is the world name without a length.
                 // Read from the socket one byte at a time until the end of the string (\n) is read.
-                while (_clientBuffer[count - 1] != Convert.ToByte('\n')) {
+                while (_clientBuffer[count - 1] != Convert.ToByte('\n'))
+                {
                     var read = _clientSocket.Receive(_clientBuffer, count, 1, SocketFlags.None);
                     if (read <= 0)
+                    {
                         throw new Exception("Client connection broken.");
+                    }
 
                     count += read;
                 }
@@ -262,7 +297,9 @@ namespace Watch
                 // Confirm that the client is trying to connect to us by checking the world name.
                 var worldName = Encoding.UTF8.GetString(_clientBuffer, 0, count - 1);
                 if (!worldName.Equals(OxWorldName, StringComparison.CurrentCultureIgnoreCase))
+                {
                     throw new Exception($"World name does not match `{OxWorldName}`: {worldName}");
+                }
 
                 var loginChallengeMessage = new NetworkMessage(_client)
                 {
@@ -279,7 +316,9 @@ namespace Watch
                 SendToClient(loginChallengeMessage);
 
                 _clientSocket.BeginReceive(_clientBuffer, 0, 2, SocketFlags.None, new AsyncCallback(BeginReceiveClientCallback), null);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 Console.WriteLine(ex);
             }
         }
@@ -289,17 +328,24 @@ namespace Watch
             try
             {
                 if (_clientSocket == null)
+                {
                     return;
+                }
 
                 var count = _clientSocket.EndReceive(ar);
                 if (count <= 0)
+                {
                     return;
+                }
 
                 var size = (uint)BitConverter.ToUInt16(_clientBuffer, 0) + 2;
-                while (count < size) {
+                while (count < size)
+                {
                     var read = _clientSocket.Receive(_clientBuffer, count, (int)(size - count), SocketFlags.None);
                     if (read <= 0)
+                    {
                         throw new Exception("Client connection broken.");
+                    }
 
                     count += read;
                 }
@@ -308,21 +354,27 @@ namespace Watch
                 message.Seek(0, SeekOrigin.Begin);
                 message.Write(_clientBuffer);
 
-                var rsaStartIndex = 31;
+                var rsaStartIndex = _client.VersionNumber >= 124010030 ? 31 : 18;
                 var rsa = new Rsa();
                 rsa.OpenTibiaDecrypt(message, rsaStartIndex);
 
                 message.Seek(rsaStartIndex, SeekOrigin.Begin);
                 if (message.ReadByte() != 0)
+                {
                     throw new Exception("RSA decryption failed.");
+                }
 
                 _xteaKey = new uint[4];
                 for (var i = 0; i < 4; ++i)
+                {
                     _xteaKey[i] = message.ReadUInt32();
+                }
 
                 _clientSendThread = new Thread(new ThreadStart(PlayRecording));
                 _clientSendThread.Start();
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 Console.WriteLine(ex);
             }
         }
@@ -336,7 +388,8 @@ namespace Watch
                     var lastTimestamp = 0L;
                     var version = reader.ReadString();
                     var sequenceNumber = 0U;
-                    while (reader.BaseStream.Position < reader.BaseStream.Length && !_userQuit) {
+                    while (reader.BaseStream.Position < reader.BaseStream.Length && !_userQuit)
+                    {
                         var packetType = (PacketType)reader.ReadByte();
                         var timestamp = reader.ReadInt64();
                         var size = reader.ReadUInt32();
@@ -345,7 +398,9 @@ namespace Watch
                         var data = reader.ReadBytes((int)size - 6);
 
                         if (packetType == PacketType.Client || data[2] == (byte)ServerPacketType.LoginChallenge)
+                        {
                             continue;
+                        }
 
                         var message = new NetworkMessage(_client)
                         {
@@ -372,13 +427,19 @@ namespace Watch
         static void SendToClient(NetworkMessage message)
         {
             if (_clientSocket == null)
+            {
                 throw new NullReferenceException("Client socket is invalid.");
+            }
 
             if (message == null)
+            {
                 throw new ArgumentNullException(nameof(message));
+            }
 
             if (message.Size <= 8)
+            {
                 return;
+            }
 
             message.PrepareToSend(_xteaKey);
             _clientSocket.Send(message.GetData(), SocketFlags.None);

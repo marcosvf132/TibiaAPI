@@ -19,7 +19,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         public override void ParseFromNetworkMessage(NetworkMessage message)
         {
             MarketObjects.Capacity = message.ReadUInt16();
-            for (var i = 0; i < MarketObjects.Capacity; ++i) {
+            for (var i = 0; i < MarketObjects.Capacity; ++i)
+            {
                 var objectId = message.ReadUInt16();
                 var price = message.ReadUInt32();
                 MarketObjects.Add((objectId, price));
@@ -31,7 +32,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             message.Write((byte)ServerPacketType.MarketStatistics);
             var count = Math.Min(MarketObjects.Count, ushort.MaxValue);
             message.Write((ushort)count);
-            for (var i = 0; i < count; ++i) {
+            for (var i = 0; i < count; ++i)
+            {
                 var (ObjectId, Price) = MarketObjects[i];
                 message.Write(ObjectId);
                 message.Write(Price);

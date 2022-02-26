@@ -22,13 +22,15 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         {
             Name = message.ReadString();
             Monsters.Capacity = message.ReadUInt16();
-            for (var i = 0; i < Monsters.Capacity; ++i) {
+            for (var i = 0; i < Monsters.Capacity; ++i)
+            {
                 var id = message.ReadUInt16();
                 var currentStage = message.ReadByte();
                 var occurrence = byte.MinValue;
-                if (currentStage > 0)
+                if (currentStage > 0 && Client.VersionNumber >= 11807048)
+                {
                     occurrence = message.ReadByte();
-				
+                }
                 Monsters.Add((id, currentStage, occurrence));
             }
         }
@@ -39,12 +41,15 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             message.Write(Name);
             var count = Math.Min(Monsters.Count, ushort.MaxValue);
             message.Write((ushort)count);
-            for (var i = 0; i < count; ++i) {
+            for (var i = 0; i < count; ++i)
+            {
                 var (Id, CurrentStage, Occurrence) = Monsters[i];
                 message.Write(Id);
                 message.Write(CurrentStage);
-                if (CurrentStage > 0)
+                if (CurrentStage > 0 && Client.VersionNumber >= 11807048)
+                {
                     message.Write(Occurrence);
+                }
             }
         }
     }

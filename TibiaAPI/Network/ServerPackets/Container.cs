@@ -38,8 +38,10 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             ContainerName = message.ReadString();
             NumberOfSlotsPerPage = message.ReadByte();
             IsSubContainer = message.ReadBool();
-            ShowDepotSearchButton = message.ReadBool();
-
+            if (Client.VersionNumber >= 12200000)
+            {
+                ShowDepotSearchButton = message.ReadBool();
+            }
             IsDragAndDropEnabled = message.ReadBool();
             IsPaginationEnabled = message.ReadBool();
             NumberOfTotalObjects = message.ReadUInt16();
@@ -47,7 +49,9 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
             ContainerObjects.Capacity = message.ReadByte();
             for (var i = 0; i < ContainerObjects.Capacity; ++i)
+            {
                 ContainerObjects.Add(message.ReadObjectInstance());
+            }
         }
 
         public override void AppendToNetworkMessage(NetworkMessage message)
@@ -58,8 +62,10 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             message.Write(ContainerName);
             message.Write(NumberOfSlotsPerPage);
             message.Write(IsSubContainer);
-            message.Write(ShowDepotSearchButton);
-
+            if (Client.VersionNumber >= 12200000)
+            {
+                message.Write(ShowDepotSearchButton);
+            }
             message.Write(IsDragAndDropEnabled);
             message.Write(IsPaginationEnabled);
             message.Write(NumberOfTotalObjects);
@@ -68,7 +74,9 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             var count = Math.Min(ContainerObjects.Count, byte.MaxValue);
             message.Write((byte)count);
             for (var i = 0; i < count; ++i)
+            {
                 message.Write(ContainerObjects[i]);
+            }
         }
     }
 }

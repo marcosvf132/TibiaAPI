@@ -20,9 +20,9 @@
 
     public enum CreatureInstanceType
     {
-        UnknownCreature = 97, // 0x61
-        OutdatedCreature = 98, // 0x62
-        Creature = 99 // 0x63
+        UnknownCreature = 97,
+        OutdatedCreature = 98,
+        Creature = 99
     }
 
     public enum OutfitWindowType
@@ -30,8 +30,7 @@
         SelectOutfit = 0,
         TryOutfitMount = 1,
         TryMountOld = 2,
-        TryHirelingDress = 3,
-        TryPodium = 5
+        TryHirelingDress = 3
     }
 
     public enum PreyActionType
@@ -237,10 +236,7 @@
         Uses = 12,
         WeaponType = 13,
         Weight = 14,
-        ImbuementSlots = 15,
-		Cleave = 16,
-		Reflection = 17,
-		PerfectShot = 18
+        ImbuementSlots = 15
     }
 
     public enum FluidType
@@ -318,60 +314,6 @@
         Transaction = 51,
         Potion = 52
     }
-
-	public enum TeamFinderType
-	{
-		Boss = 1,
-		Hunt = 2,
-		Quest = 3
-	}
-	
-	public enum CharacterInfoPage
-	{
-		Basic = 0,
-		Stats = 1,
-		Combat = 2,
-		Deaths = 3,
-		Pvp = 4,
-		Achiev = 5,
-		Items = 6,
-		Outfits = 7,
-		Store = 8,
-		Inspect = 9,
-		Badges = 10,
-		Titles = 11
-	}
-
-	public enum ImpactAnalyzer
-	{
-		Heal = 0,
-		DamageDealt = 1,
-		DamageReceived = 2
-	}
-
-	public enum CreatureUpdateType
-	{
-		Update = 0,
-		Mana = 11,
-		Status = 12,
-		Vocation = 13,
-		Icon = 14
-	}
-
-	public enum ElementType
-	{
-		Physical = 0,
-		Fire = 1,
-		Earth = 2,
-		Energy = 3,
-		Ice = 4,
-		Holy = 5,
-		Death = 6,
-		Healing = 7,
-		Drown = 8,
-		LifeDrain = 9,
-		Undefined = 10
-	}
 
     public enum ClientPacketType
     {
@@ -535,7 +477,6 @@
         LoginAdvice = 0x15,
         LoginWait = 0x16,
         LoginSuccess = 0x17,
-        LogoutSession = 0x18,
         StoreButtonIndicators = 0x19,
         Ping = 0x1D,
         PingBack = 0x1E,
@@ -599,8 +540,8 @@
         ShowGameNews = 0x98,
         DepotSearchDetailList = 0x99,
         CloseDepotSearch = 0x9A,
-        BlessingsDialog = 0x9B, //////////////
-        Blessings = 0x9C, //////////////
+        BlessingsDialog = 0x9B,
+        Blessings = 0x9C,
         SwitchPreset = 0x9D,
         PremiumTrigger = 0x9E,
         PlayerDataBasic = 0x9F,
@@ -647,7 +588,7 @@
         MarketStatistics = 0xCD,
         ItemWasted = 0xCE,
         ItemLooted = 0xCF,
-        TrackQuestflags = 0xD0, /////////////
+        TrackQuestflags = 0xD0,
         KillTracking = 0xD1,
         BuddyData = 0xD2,
         BuddyStatusChange = 0xD3,
@@ -662,26 +603,26 @@
         TutorialHint = 0xDC,
         //AutomapFlag = 0xDD,
         CyclopediaMapData = 0xDD,
-        DailyRewardCollectionState = 0xDE, /////////////
+        DailyRewardCollectionState = 0xDE,
         CreditBalance = 0xDF,
         IngameShopError = 0xE0,
         RequestPurchaseData = 0xE1,
-        OpenRewardWall = 0xE2, //////////////
-        CloseRewardWall = 0xE3, ///////////////
-        DailyRewardBasic = 0xE4, ///////////////
-        DailyRewardHistory = 0xE5, ///////////////
-        PreyFreeListRerollAvailability = 0xE6, ///////////////
-        PreyTimeLeft = 0xE7, ///////////////
-        PreyData = 0xE8, ///////////////
-        PreyPrices = 0xE9, ///////////////
+        OpenRewardWall = 0xE2,
+        CloseRewardWall = 0xE3,
+        DailyRewardBasic = 0xE4,
+        DailyRewardHistory = 0xE5,
+        PreyFreeListRerollAvailability = 0xE6,
+        PreyTimeLeft = 0xE7,
+        PreyData = 0xE8,
+        PreyPrices = 0xE9,
         OfferDescription = 0xEA,
         ImbuingDialogRefresh = 0xEB,
         CloseImbuingDialog = 0xEC,
         ShowMessageDialog = 0xED,
         RequestResourceBalance = 0xEE,
         TibiaTime = 0xEF,
-        QuestLog = 0xF0, ///////////////
-        QuestLine = 0xF1, ///////////////
+        QuestLog = 0xF0,
+        QuestLine = 0xF1,
         UpdatingShopBalance = 0xF2,
         ChannelEvent = 0xF3,
         ObjectInfo = 0xF4,

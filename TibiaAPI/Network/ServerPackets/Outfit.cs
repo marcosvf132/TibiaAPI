@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using OXGaming.TibiaAPI.Constants;
-using OXGaming.TibiaAPI.Utilities;
 
 namespace OXGaming.TibiaAPI.Network.ServerPackets
 {
@@ -13,26 +12,17 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             new List<(ushort Id, string Name, byte Addons, byte ButtonType, uint StoreOfferId)>();
         public List<(ushort Id, string Name, byte ButtonType, uint StoreOfferId)> Mounts { get; } =
             new List<(ushort Id, string Name, byte ButtonType, uint StoreOfferId)>();
-        public List<(ushort Id, string Name, byte ButtonType, uint StoreOfferId)> Familiars { get; } =
-            new List<(ushort Id, string Name, byte ButtonType, uint StoreOfferId)>();
 
-		public Appearances.OutfitInstance OutfitInst { get; set; }
-		public Appearances.OutfitInstance MountInst { get; set; }
+        public ushort MountId { get; set; }
+        public ushort OutfitId { get; set; }
+        public ushort Type { get; set; }
 
-        public ushort Familiar { get; set; }
-        public ushort UnknownUint16 { get; set; }
-        public ushort Id { get; set; }
+        public byte Addons { get; set; }
+        public byte DetailColor { get; set; }
+        public byte HeadColor { get; set; }
+        public byte LegsColor { get; set; }
+        public byte TorsoColor { get; set; }
 
-        public bool IsMounted { get; set; }
-        public bool IsVisible { get; set; }
-        public bool IsOutfit { get; set; }
-		
-        public byte StackPos { get; set; }
-        public byte Direction { get; set; }
-        public byte Type { get; set; }
-		
-        public Position PodiumPosition { get; set; }
-		
         public Outfit(Client client)
         {
             Client = client;
@@ -41,119 +31,134 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
         public override void ParseFromNetworkMessage(NetworkMessage message)
         {
-            OutfitInst = (Appearances.OutfitInstance)message.ReadCreatureOutfit();
-            MountInst = (Appearances.OutfitInstance)message.ReadMountOutfit(true);
-			Familiar = message.ReadUInt16();
+            OutfitId = message.ReadUInt16();
+            HeadColor = message.ReadByte();
+            TorsoColor = message.ReadByte();
+            LegsColor = message.ReadByte();
+            DetailColor = message.ReadByte();
+            Addons = message.ReadByte();
+            MountId = message.ReadUInt16();
 
-            Outfits.Capacity = message.ReadUInt16();
-            for (var i = 0; i < Outfits.Capacity; ++i) {
+            Outfits.Capacity = Client.VersionNumber >= 11750000 ? message.ReadUInt16() : message.ReadByte();
+            for (var i = 0; i < Outfits.Capacity; ++i)
+            {
                 var id = message.ReadUInt16();
                 var name = message.ReadString();
                 var addons = message.ReadByte();
-                var buttonType = message.ReadByte();
+                var buttonType = Client.VersionNumber >= 11750000 ? message.ReadByte() : byte.MinValue;
                 uint storeOfferId = 0;
                 if (buttonType == 0x01)
+                {
                     storeOfferId = message.ReadUInt32();
+                }
                 Outfits.Add((id, name, addons, buttonType, storeOfferId));
             }
 
-            Mounts.Capacity = message.ReadUInt16();
-            for (var i = 0; i < Mounts.Capacity; ++i) {
+            Mounts.Capacity = Client.VersionNumber >= 11750000 ? message.ReadUInt16() : message.ReadByte();
+            for (var i = 0; i < Mounts.Capacity; ++i)
+            {
                 var id = message.ReadUInt16();
                 var name = message.ReadString();
-                var buttonType = message.ReadByte();
+                var buttonType = Client.VersionNumber >= 11750000 ? message.ReadByte() : byte.MinValue;
                 uint storeOfferId = 0;
                 if (buttonType == 0x01)
+                {
                     storeOfferId = message.ReadUInt32();
+                }
                 Mounts.Add((id, name, buttonType, storeOfferId));
             }
 
-            Familiars.Capacity = message.ReadUInt16();
-            for (var i = 0; i < Familiars.Capacity; ++i) {
-                var id = message.ReadUInt16();
-                var name = message.ReadString();
-                var buttonType = message.ReadByte();
-                uint storeOfferId = 0;
-                if (buttonType == 0x01)
-                    storeOfferId = message.ReadUInt32();
-                Familiars.Add((id, name, buttonType, storeOfferId));
-            }
-
-			Type = message.ReadByte();
-            if (Type == (byte)OutfitWindowType.SelectOutfit) {
-                IsMounted = message.ReadBool();
-            } else if (Type == (byte)OutfitWindowType.TryPodium) {
-                IsMounted = message.ReadBool();
-
-                UnknownUint16 = message.ReadUInt16();
-                PodiumPosition = message.ReadPosition();
-                Id = message.ReadUInt16();
-                StackPos = message.ReadByte();
-
-                IsVisible = message.ReadBool();
-                IsOutfit = message.ReadBool();
-                Direction = message.ReadByte();
-            } else if (Type == (byte)OutfitWindowType.TryHirelingDress) {
+            Type = message.ReadUInt16();
+            if (Type == 4) // Hireling Dresses
+            {
                 HirelingDresses.Capacity = message.ReadUInt16();
-                for (var i = 0; i < HirelingDresses.Capacity; ++i) {
+                for (var i = 0; i < HirelingDresses.Capacity; ++i)
+                {
                     var femaleLooktype = message.ReadUInt16();
                     var maleLooktype = message.ReadUInt16();
                     HirelingDresses.Add((femaleLooktype, maleLooktype));
                 }
-            } else {
-				throw new Exception($"[Outfit.ParseFromNetworkMessage] Unknown outfit window type '{Type}'.");
-			}
+            }
         }
 
         public override void AppendToNetworkMessage(NetworkMessage message)
         {
             message.Write((byte)ServerPacketType.Outfit);
-            message.Write(OutfitInst);
-            message.Write(MountInst);
-			message.Write(Familiar);
+            message.Write(OutfitId);
+            message.Write(HeadColor);
+            message.Write(TorsoColor);
+            message.Write(LegsColor);
+            message.Write(DetailColor);
+            message.Write(Addons);
+            message.Write(MountId);
 
-            var count = Math.Min(Outfits.Count, ushort.MaxValue);
-            message.Write((ushort)count);
-            for (var i = 0; i < count; ++i) {
+            var count = 0;
+            if (Client.VersionNumber >= 11750000)
+            {
+                count = Math.Min(Outfits.Count, ushort.MaxValue);
+                message.Write((ushort)count);
+            }
+            else
+            {
+                count = Math.Min(Outfits.Count, byte.MaxValue);
+                message.Write((byte)count);
+            }
+
+            for (var i = 0; i < count; ++i)
+            {
                 var (Id, Name, Addons, ButtonType, StoreOfferId) = Outfits[i];
                 message.Write(Id);
                 message.Write(Name);
                 message.Write(Addons);
-                message.Write(ButtonType);
-                if (ButtonType == 0x01)
-					message.Write(StoreOfferId);
+                if (Client.VersionNumber >= 11750000)
+                {
+                    message.Write(ButtonType);
+                    if (ButtonType == 0x01)
+                    {
+                        message.Write(StoreOfferId);
+                    }
+                }
             }
 
-            count = Math.Min(Mounts.Count, ushort.MaxValue);
-            message.Write((ushort)count);
-            for (var i = 0; i < count; ++i) {
+            if (Client.VersionNumber >= 11750000)
+            {
+                count = Math.Min(Mounts.Count, ushort.MaxValue);
+                message.Write((ushort)count);
+            }
+            else
+            {
+                count = Math.Min(Mounts.Count, byte.MaxValue);
+                message.Write((byte)count);
+            }
+
+            for (var i = 0; i < count; ++i)
+            {
                 var (Id, Name, ButtonType, StoreOfferId) = Mounts[i];
                 message.Write(Id);
                 message.Write(Name);
-                message.Write(ButtonType);
-                if (ButtonType == 0x01)
-					message.Write(StoreOfferId);
+                if (Client.VersionNumber >= 11750000)
+                {
+                    message.Write(ButtonType);
+                    if (ButtonType == 0x01)
+                    {
+                        message.Write(StoreOfferId);
+                    }
+                }
             }
 
-			message.Write(Type);
-			if (Type == (byte)OutfitWindowType.SelectOutfit) {
-				message.Write(IsMounted);
-			} else if (Type == (byte)OutfitWindowType.TryPodium) {
-				message.Write(IsMounted);
-				
-				message.Write(UnknownUint16);
-				message.Write(PodiumPosition);
-				message.Write(Id);
-				message.Write(StackPos);
-				
-				message.Write(IsVisible);
-				message.Write(IsOutfit);
-				message.Write(Direction);
-            } else if (Type == (byte)OutfitWindowType.TryHirelingDress) {
-                message.Write((ushort)HirelingDresses.Capacity);
-                foreach (var hireling in HirelingDresses) {
-                    message.Write(hireling.FemaleLooktype);
-                    message.Write(hireling.MaleLooktype);
+            if (Client.VersionNumber >= 11750000)
+            {
+                message.Write(Type);
+                if (Type == 4) // Hireling Dresses
+                {
+                    count = Math.Min(HirelingDresses.Count, ushort.MaxValue);
+                    message.Write((ushort)count);
+                    for (var i = 0; i < count; ++i)
+                    {
+                        var (FemaleLooktype, MaleLooktype) = HirelingDresses[i];
+                        message.Write(FemaleLooktype);
+                        message.Write(MaleLooktype);
+                    }
                 }
             }
         }
