@@ -1,8 +1,5 @@
 ![.NET Core](https://github.com/jo3bingham/TibiaAPI/workflows/.NET%20Core/badge.svg)
 
-# Disclaimer:
-The original version of this API included support for all protocols, but on my fork this support was removed. This version was updated to work on protocol v12.72 or higher, using it on older protocols may not work as intended and may not be useful for you.
-
 # TibiaAPI
 TibiaAPI is an open-source, cross-platform proxy written in C#. You will need to install .NET Core 3.1 to take full advantage of the code in this repository.
 
@@ -127,7 +124,6 @@ You can override this by passing `-p/--port` on the command-line.
 Use `-r/--recording` to specify the recording you would like to watch.
 
 ## Donate
-The following data are from jo3bingham only, this API was created by him and he deserves all credits.
 If you enjoy the project, and like the work that has been put into it, feel free to donate. Donations aren't necessary, but anything is appreciated. Thanks!
 
 Paypal: PayPal.Me/jo3bingham
