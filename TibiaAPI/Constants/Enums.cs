@@ -623,7 +623,6 @@
         OpenChannel = 0xAC,
         PrivateChannel = 0xAD,
         EditGuildMessage = 0xAE,
-        ExperienceTracker = 0xAF,
         Highscores = 0xB1,
         OpenOwnChannel = 0xB2,
         CloseChannel = 0xB3,
