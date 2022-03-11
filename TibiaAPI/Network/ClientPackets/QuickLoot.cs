@@ -11,6 +11,9 @@ namespace OXGaming.TibiaAPI.Network.ClientPackets
 
         public byte Index { get; set; }
 
+        public bool AllCorpses { get; set; }
+        public bool AutoLoot { get; set; }
+
         public QuickLoot(Client client)
         {
             Client = client;
@@ -22,6 +25,8 @@ namespace OXGaming.TibiaAPI.Network.ClientPackets
             Position = message.ReadPosition();
             ObjectId = message.ReadUInt16();
             Index = message.ReadByte();
+            AllCorpses = message.ReadBool();
+            AutoLoot = message.ReadBool();
         }
 
         public override void AppendToNetworkMessage(NetworkMessage message)
@@ -30,6 +35,8 @@ namespace OXGaming.TibiaAPI.Network.ClientPackets
             message.Write(Position);
             message.Write(ObjectId);
             message.Write(Index);
+            message.Write(AllCorpses);
+            message.Write(AutoLoot);
         }
     }
 }
