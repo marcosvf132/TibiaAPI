@@ -328,7 +328,14 @@
 		Hunt = 2,
 		Quest = 3
 	}
-	
+
+	public enum PartyAnalyzerType
+	{
+		Reset = 0,
+		PriceType = 1,
+		PriceValue = 2
+	}
+
 	public enum CharacterInfoPage
 	{
 		Basic = 0,

@@ -28,8 +28,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         public override void ParseFromNetworkMessage(NetworkMessage message)
         {
             SessionMinutes = message.ReadUInt32();
-            LeaderId = message.ReadUInt32(); // This is a player ID, but it may not be the leader.
-            // TODO
+            LeaderId = message.ReadUInt32();
             UnknownByte1 = message.ReadByte();
             MemberInfo.Capacity = message.ReadByte();
             for (var i = 0; i < MemberInfo.Capacity; ++i)
@@ -59,7 +58,6 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
         public override void AppendToNetworkMessage(NetworkMessage message)
         {
-            // TODO
             message.Write((byte)ServerPacketType.PartyHuntAnalyser);
             message.Write(SessionMinutes);
             message.Write(LeaderId);
