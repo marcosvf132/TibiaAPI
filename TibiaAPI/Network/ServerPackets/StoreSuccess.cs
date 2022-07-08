@@ -6,9 +6,6 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
     {
         public string Text { get; set; }
 
-        public int ConfirmedCreditBalance { get; set; }
-        public int CurrentCreditBalance { get; set; }
-
         public byte ReasonType { get; set; }
 
         public StoreSuccess(Client client)
