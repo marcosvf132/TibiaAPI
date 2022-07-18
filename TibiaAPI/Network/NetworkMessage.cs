@@ -346,41 +346,55 @@ namespace OXGaming.TibiaAPI.Network
                 if (objectInstance.IsLootContainer)
                     objectInstance.LootCategoryFlags = ReadUInt32();
 
-                bool isQuiver = ReadBool();
-                if (isQuiver)
-                    ReadUInt32(); // Amount
+                objectInstance.IsQuiver = ReadBool();
+                if (objectInstance.IsQuiver)
+                    objectInstance.QuiverAmount = ReadUInt32();
             }
 
             // Podium
             if (objectType.Flags.ShowOffSocket) {
-                ushort podiumOutfitId = ReadUInt16();
+
+                var podiumOutfitId = ReadUInt16();
                 if (podiumOutfitId != 0) {
-                    ReadByte(); // LookHead
-                    ReadByte(); // LookBody
-                    ReadByte(); // LookLegs
-                    ReadByte(); // LookFeet
-                    ReadByte(); // LookAddon
+                    var podiumOutfitColorHead = ReadByte();
+                    var podiumOutfitColorTorso = ReadByte();
+                    var podiumOutfitColorLegs = ReadByte();
+                    var podiumOutfitColorDetail = ReadByte();
+                    var podiumOutfitAddons = ReadByte();
+                    objectInstance.PodiumOutfitInstance = _client.AppearanceStorage.CreateOutfitInstance(podiumOutfitId, podiumOutfitColorHead, podiumOutfitColorTorso,
+                                                                           podiumOutfitColorLegs, podiumOutfitColorDetail, podiumOutfitAddons);
                 }
 
-                ushort podiumMountOutfitId = ReadUInt16();
-                if (podiumMountOutfitId != 0) {
-                    ReadByte(); // LookHead
-                    ReadByte(); // LookBody
-                    ReadByte(); // LookLegs
-                    ReadByte(); // LookFeet
+                var podiumMountId = ReadUInt16();
+                if (podiumMountId != 0) {
+                    var podiumMountColorHead = ReadByte();
+                    var podiumMountColorTorso = ReadByte();
+                    var podiumMountColorLegs = ReadByte();
+                    var podiumMountColorDetail = ReadByte();
+                    var podiumMountAddons = ReadByte();
+                    objectInstance.PodiumMountInstance = _client.AppearanceStorage.CreateOutfitInstance(podiumMountId, podiumMountColorHead, podiumMountColorTorso,
+                                                                           podiumMountColorLegs, podiumMountColorDetail, podiumMountAddons);
                 }
 
-                ReadByte(); // Direction
-                ReadBool(); // Visible
+                objectInstance.PodiumDirection = ReadByte();
+                objectInstance.IsPodiumVisible = ReadBool();
             }
 
-            // 12.80
+            // Item tier
             if (objectType.Flags.Upgradeclassification != null && objectType.Flags.Upgradeclassification.UpgradeClassification > 0) {
-                ReadByte(); // Direction
+                objectInstance.Tier = ReadByte();
             }
 
-            //if (objectType.FrameGroup[0].SpriteInfo.Animation != null)
-            //    objectInstance.Phase = ReadByte();
+            // Timer
+            if (objectType.Flags.Expire || objectType.Flags.Expirestop || objectType.Flags.Clockexpire) {
+                objectInstance.DecayTime = ReadUInt32();
+                objectInstance.UnknownDecayByte = ReadByte();
+            }
+
+            // Charges
+            if (objectType.Flags.Wearout) {
+                objectInstance.Charges = ReadUInt32();
+            }
 
             return objectInstance;
         }

@@ -7,9 +7,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 {
     public class PlayerGoods : ServerPacket
     {
-        public List<(ushort Id, byte Count)> Goods { get; } = new List<(ushort Id, byte Count)>();
-
-        public ulong Money { get; set; }
+        public List<(ushort Id, ushort Count)> Goods { get; } = new List<(ushort Id, ushort Count)>();
 
         public PlayerGoods(Client client)
         {
@@ -19,11 +17,10 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
         public override void ParseFromNetworkMessage(NetworkMessage message)
         {
-            Money = message.ReadUInt64();
             Goods.Capacity = message.ReadByte();
             for (var i = 0; i < Goods.Capacity; ++i) {
                 var id = message.ReadUInt16();
-                var count = message.ReadByte();
+                var count = message.ReadUInt16();
                 Goods.Add((id, count));
             }
         }
@@ -31,7 +28,6 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         public override void AppendToNetworkMessage(NetworkMessage message)
         {
             message.Write((byte)ServerPacketType.PlayerGoods);
-            message.Write(Money);
             var count = Math.Min(Goods.Count, byte.MaxValue);
             message.Write((byte)count);
             for (var i = 0; i < count; ++i) {

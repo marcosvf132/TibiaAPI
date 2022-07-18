@@ -249,6 +249,7 @@ namespace OXGaming.TibiaAPI.Network
         public event ReceivedPacketEventHandler OnReceivedServerOpenChannelPacket;
         public event ReceivedPacketEventHandler OnReceivedServerPrivateChannelPacket;
         public event ReceivedPacketEventHandler OnReceivedServerEditGuildMessagePacket;
+        public event ReceivedPacketEventHandler OnReceivedServerExperienceTrackerMessagePacket;
         public event ReceivedPacketEventHandler OnReceivedServerHighscoresPacket;
         public event ReceivedPacketEventHandler OnReceivedServerOpenOwnChannelPacket;
         public event ReceivedPacketEventHandler OnReceivedServerCloseChannelPacket;
@@ -1152,6 +1153,9 @@ namespace OXGaming.TibiaAPI.Network
                             break;
                         case ServerPacketType.EditGuildMessage:
                             packet.Forward = OnReceivedServerEditGuildMessagePacket?.Invoke(packet) ?? true;
+                            break;
+                        case ServerPacketType.ExperienceTracker:
+                            packet.Forward = OnReceivedServerExperienceTrackerMessagePacket?.Invoke(packet) ?? true;
                             break;
                         case ServerPacketType.Highscores:
                             packet.Forward = OnReceivedServerHighscoresPacket?.Invoke(packet) ?? true;
