@@ -5,8 +5,8 @@ namespace OXGaming.TibiaAPI.Network.ClientPackets
     public class SellObject : ClientPacket
     {
         public ushort ObjectId { get; set; }
+        public ushort Amount { get; set; }
 
-        public byte Amount { get; set; }
         public byte Data { get; set; }
 
         public bool KeepEquipped { get; set; }
@@ -21,7 +21,7 @@ namespace OXGaming.TibiaAPI.Network.ClientPackets
         {
             ObjectId = message.ReadUInt16();
             Data = message.ReadByte();
-            Amount = message.ReadByte();
+            Amount = message.ReadUInt16();
             KeepEquipped = message.ReadBool();
         }
 
