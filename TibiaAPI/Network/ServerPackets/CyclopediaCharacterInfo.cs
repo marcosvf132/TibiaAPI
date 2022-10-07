@@ -79,6 +79,10 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         public uint RemainingDailyRewardXpBoostTime { get; set; }
         public uint RemainingStoreXpBoostTime { get; set; }
         public uint TournamentFactor { get; set; }
+        public uint HealthCurrent { get; set; }
+        public uint HealthMax { get; set; }
+        public uint ManaCurrent { get; set; }
+        public uint ManaMax { get; set; }
 
         public ushort AchievementPoints { get; set; }
         public ushort Armor { get; set; }
@@ -91,8 +95,6 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         public ushort Defense { get; set; }
         public ushort Food { get; set; }
         public ushort GrindingAddend { get; set; }
-        public ushort HealthCurrent { get; set; }
-        public ushort HealthMax { get; set; }
         public ushort HuntingBoostFactor { get; set; }
         public ushort Level { get; set; }
         public ushort LevelDisplay { get; set; }
@@ -100,8 +102,6 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         public ushort LifeLeechAmountPercentBonus { get; set; }
         public ushort LifeLeechChancePercentBase { get; set; }
         public ushort LifeLeechChancePercentBonus { get; set; }
-        public ushort ManaCurrent { get; set; }
-        public ushort ManaMax { get; set; }
         public ushort ManaLeechAmountPercentBase { get; set; }
         public ushort ManaLeechAmountPercentBonus { get; set; }
         public ushort ManaLeechChancePercentBase { get; set; }
@@ -205,10 +205,10 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                 HuntingBoostFactor = message.ReadUInt16();
                 StoreXpBoostTime = message.ReadUInt16();
                 ShowStoreXpBoostButton = message.ReadBool();
-                HealthCurrent = message.ReadUInt16();
-                HealthMax = message.ReadUInt16();
-                ManaCurrent = message.ReadUInt16();
-                ManaMax = message.ReadUInt16();
+                HealthCurrent = message.ReadUInt32();
+                HealthMax = message.ReadUInt32();
+                ManaCurrent = message.ReadUInt32();
+                ManaMax = message.ReadUInt32();
                 Soul = message.ReadByte();
                 Stamina = message.ReadUInt16();
                 Food = message.ReadUInt16();
@@ -248,21 +248,21 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                 ManaLeechAmountPercentBase = message.ReadUInt16();
                 ManaLeechAmountPercentBonus = message.ReadUInt16();
 
-				UnknownU16One = message.ReadUInt16();
-				UnknownU16Two = message.ReadUInt16();
-				UnknownU16Three = message.ReadUInt16();
-				UnknownU16Four = message.ReadUInt16();
-				UnknownU16Five = message.ReadUInt16();
-				UnknownU16Six = message.ReadUInt16();
+                UnknownU16One = message.ReadUInt16();
+                UnknownU16Two = message.ReadUInt16();
+                UnknownU16Three = message.ReadUInt16();
+                UnknownU16Four = message.ReadUInt16();
+                UnknownU16Five = message.ReadUInt16();
+                UnknownU16Six = message.ReadUInt16();
 
                 Cleave = message.ReadUInt16();
                 MagicShieldBonus = message.ReadUInt16();
                 MagicShieldPercentage = message.ReadUInt16();
 				
-				for (int i = 1; i <= 5; i++) {
-					var range = message.ReadUInt16();
-					PerfectShot.Add(range);
-				}
+                for (int i = 1; i <= 5; i++) {
+                    var range = message.ReadUInt16();
+                    PerfectShot.Add(range);
+                }
 				
                 Reflection = message.ReadUInt16();
                 BlessingsCurrent = message.ReadByte();
@@ -277,9 +277,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                 DamageReductions.Capacity = message.ReadByte();
                 for (var i = 0; i < DamageReductions.Capacity; ++i)
                     DamageReductions.Add((message.ReadByte(), message.ReadByte()));
-
-				Concotions.Capacity = message.ReadByte();
-				for (var i = 0; i < Concotions.Capacity; ++i)
+                    Concotions.Capacity = message.ReadByte();
+                    for (var i = 0; i < Concotions.Capacity; ++i)
                     Concotions.Add((message.ReadUInt16(), message.ReadUInt16()));
 
             } else if (Type == (byte)CharacterInfoPage.Deaths) {
@@ -347,12 +346,12 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                     Outfits.Add((id, name, addons, category, unknown));
                 }
 				
-				if (Outfits.Capacity > 0) {
-					HeadColor = message.ReadByte();
-					TorsoColor = message.ReadByte();
-					LegsColor = message.ReadByte();
-					DetailColor = message.ReadByte();
-				}
+                if (Outfits.Capacity > 0) {
+                    HeadColor = message.ReadByte();
+                    TorsoColor = message.ReadByte();
+                    LegsColor = message.ReadByte();
+                    DetailColor = message.ReadByte();
+                }
 				
                 Mounts.Clear();
                 Mounts.Capacity = message.ReadUInt16();
@@ -366,14 +365,14 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                     Mounts.Add((id, name, category, unknown));
                 }
 				
-				if (Mounts.Capacity > 0) {
-					MountHeadColor = message.ReadByte();
-					MountTorsoColor = message.ReadByte();
-					MountLegsColor = message.ReadByte();
-					MountDetailColor = message.ReadByte();
-				}
+                if (Mounts.Capacity > 0) {
+                    MountHeadColor = message.ReadByte();
+                    MountTorsoColor = message.ReadByte();
+                    MountLegsColor = message.ReadByte();
+                    MountDetailColor = message.ReadByte();
+                }
 				
-				Familiars.Capacity = message.ReadUInt16();
+                Familiars.Capacity = message.ReadUInt16();
                 for (var i = 0; i < Familiars.Capacity; ++i) {
                     var id = message.ReadUInt16();
                     var name = message.ReadString();
@@ -526,11 +525,11 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                     message.Write(Skills[i].Progress);
                 }
 				
-				message.Write(MagicBoost);
-				if (MagicBoost) {
-					message.Write((byte)MagicBoostElement);
-					message.Write(MagicBoostValue);
-				}
+                message.Write(MagicBoost);
+                if (MagicBoost) {
+                    message.Write((byte)MagicBoostElement);
+                    message.Write(MagicBoostValue);
+                }
             } else if (Type == (byte)CharacterInfoPage.Combat) {
                 message.Write(CriticalHitChancePercentBase);
                 message.Write(CriticalHitChancePercentBonus);
@@ -545,19 +544,19 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                 message.Write(LifeLeechAmountPercentBase);
                 message.Write(LifeLeechAmountPercentBonus);
 
-				message.Write(UnknownU16One);
-				message.Write(UnknownU16Two);
-				message.Write(UnknownU16Three);
-				message.Write(UnknownU16Four);
-				message.Write(UnknownU16Five);
-				message.Write(UnknownU16Six);
+                message.Write(UnknownU16One);
+                message.Write(UnknownU16Two);
+                message.Write(UnknownU16Three);
+                message.Write(UnknownU16Four);
+                message.Write(UnknownU16Five);
+                message.Write(UnknownU16Six);
 
                 message.Write(Cleave);
                 message.Write(MagicShieldBonus);
                 message.Write(MagicShieldPercentage);
 				
-				foreach (var shot in PerfectShot)
-					message.Write(shot);
+                foreach (var shot in PerfectShot)
+                    message.Write(shot);
 				
                 message.Write(Reflection);
                 message.Write(BlessingsCurrent);
@@ -578,7 +577,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 				
                 count = Math.Min(Concotions.Count, byte.MaxValue);
                 message.Write((byte)count);
-				for (var i = 0; i < count; ++i) {
+                for (var i = 0; i < count; ++i) {
                     message.Write(Concotions[i].Id);
                     message.Write(Concotions[i].Time);
                 }
@@ -650,12 +649,12 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                     message.Write(Unknown);
                 }
 				
-				if (count > 0) {
-					message.Write(HeadColor);
-					message.Write(TorsoColor);
-					message.Write(LegsColor);
-					message.Write(DetailColor);
-				}
+                if (count > 0) {
+                    message.Write(HeadColor);
+                    message.Write(TorsoColor);
+                    message.Write(LegsColor);
+                    message.Write(DetailColor);
+                }
 				
                 count = Math.Min(Mounts.Count, ushort.MaxValue);
                 message.Write((ushort)count);
@@ -667,12 +666,12 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                     message.Write(Unknown);
                 }
 				
-				if (count > 0) {
-					message.Write(MountHeadColor);
-					message.Write(MountTorsoColor);
-					message.Write(MountLegsColor);
-					message.Write(MountDetailColor);
-				}
+                if (count > 0) {
+                    message.Write(MountHeadColor);
+                    message.Write(MountTorsoColor);
+                    message.Write(MountLegsColor);
+                    message.Write(MountDetailColor);
+                }
 				
                 count = Math.Min(Familiars.Count, ushort.MaxValue);
                 message.Write((ushort)count);
