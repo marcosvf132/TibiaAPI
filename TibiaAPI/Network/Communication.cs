@@ -157,6 +157,8 @@ namespace OXGaming.TibiaAPI.Network
         public event ReceivedPacketEventHandler OnReceivedClientBuyIngameShopOfferPacket;
         public event ReceivedPacketEventHandler OnReceivedClientOpenTransactionHistoryPacket;
         public event ReceivedPacketEventHandler OnReceivedClientGetTransactionHistoryPacket;
+        public event ReceivedPacketEventHandler OnReceivedClientCyclopediaBossSlots;
+        public event ReceivedPacketEventHandler OnReceivedClientCyclopediaBosstiary;
 
         public event ReceivedPacketEventHandler OnReceivedServerCreatureDataPacket;
         public event ReceivedPacketEventHandler OnReceivedServerSessionDumpStartPacket;
@@ -210,7 +212,7 @@ namespace OXGaming.TibiaAPI.Network
         public event ReceivedPacketEventHandler OnReceivedServerAmbientePacket;
         public event ReceivedPacketEventHandler OnReceivedServerGraphicalEffectsPacket;
         public event ReceivedPacketEventHandler OnReceivedServerRemoveGraphicalEffectPacket;
-        public event ReceivedPacketEventHandler OnReceivedServerMissileEffectPacket;
+        public event ReceivedPacketEventHandler OnReceivedServerAnthemPacket;
         public event ReceivedPacketEventHandler OnReceivedForgingBasicDataPacket;
         public event ReceivedPacketEventHandler OnReceivedServerTrappersPacket;
         public event ReceivedPacketEventHandler OnReceivedServerCreatureUpdatePacket;
@@ -265,6 +267,7 @@ namespace OXGaming.TibiaAPI.Network
         public event ReceivedPacketEventHandler OnReceivedServerBottomFloorPacket;
         public event ReceivedPacketEventHandler OnReceivedServerUpdateLootContainersPacket;
         public event ReceivedPacketEventHandler OnReceivedServerPlayerDataTournamentPacket;
+        public event ReceivedPacketEventHandler OnReceivedServerBossPodiumPacket;
         public event ReceivedPacketEventHandler OnReceivedServerCyclopediaHouseActionResultPacket;
         public event ReceivedPacketEventHandler OnReceivedServerTournamentInformationPacket;
         public event ReceivedPacketEventHandler OnReceivedServerTournamentLeaderboardPacket;
@@ -325,6 +328,10 @@ namespace OXGaming.TibiaAPI.Network
         public event ReceivedPacketEventHandler OnReceivedServerStoreOffersPacket;
         public event ReceivedPacketEventHandler OnReceivedServerTransactionHistoryPacket;
         public event ReceivedPacketEventHandler OnReceivedServerStoreSuccessPacket;
+        public event ReceivedPacketEventHandler OnReceivedServerCyclopediaBossSlots;
+        public event ReceivedPacketEventHandler OnReceivedServerCyclopediaBosstiary;
+        public event ReceivedPacketEventHandler OnReceivedServerBossCooldown;
+        public event ReceivedPacketEventHandler OnReceivedServerBosstiaryData;
 
         public void ParseClientMessage(Client client, NetworkMessage inMessage, NetworkMessage outMessage)
         {
@@ -811,6 +818,12 @@ namespace OXGaming.TibiaAPI.Network
                         case ClientPacketType.GetTransactionHistory:
                             packet.Forward = OnReceivedClientGetTransactionHistoryPacket?.Invoke(packet) ?? true;
                             break;
+                        case ClientPacketType.CyclopediaBossSlots:
+                            packet.Forward = OnReceivedClientCyclopediaBossSlots?.Invoke(packet) ?? true;
+                            break;
+                        case ClientPacketType.CyclopediaBosstiary:
+                            packet.Forward = OnReceivedClientCyclopediaBosstiary?.Invoke(packet) ?? true;
+                            break;
                         default:
                             client.Logger.Error($"Unknown client packet: {((byte)currentPacket).ToString("X2")}, position: {packetPosition}");
                             client.Logger.Error($"Last known packets: {string.Join(" ", packets.Select(p => "[" + ((byte)p.PacketType).ToString("X2") + ":" + p.Position + "]" + p.PacketType).ToArray())}");
@@ -1037,8 +1050,8 @@ namespace OXGaming.TibiaAPI.Network
                         case ServerPacketType.RemoveGraphicalEffect:
                             packet.Forward = OnReceivedServerRemoveGraphicalEffectPacket?.Invoke(packet) ?? true;
                             break;
-                        case ServerPacketType.MissileEffect:
-                            packet.Forward = OnReceivedServerMissileEffectPacket?.Invoke(packet) ?? true;
+                        case ServerPacketType.Anthem:
+                            packet.Forward = OnReceivedServerAnthemPacket?.Invoke(packet) ?? true;
                             break;
                         case ServerPacketType.ForgingBasicData:
                             packet.Forward = OnReceivedForgingBasicDataPacket?.Invoke(packet) ?? true;
@@ -1201,6 +1214,9 @@ namespace OXGaming.TibiaAPI.Network
                             break;
                         case ServerPacketType.PlayerDataTournament:
                             packet.Forward = OnReceivedServerPlayerDataTournamentPacket?.Invoke(packet) ?? true;
+                            break;
+                        case ServerPacketType.BossPodium:
+                            packet.Forward = OnReceivedServerBossPodiumPacket?.Invoke(packet) ?? true;
                             break;
                         case ServerPacketType.CyclopediaHouseActionResult:
                             packet.Forward = OnReceivedServerCyclopediaHouseActionResultPacket?.Invoke(packet) ?? true;
@@ -1381,6 +1397,18 @@ namespace OXGaming.TibiaAPI.Network
                             break;
                         case ServerPacketType.StoreSuccess:
                             packet.Forward = OnReceivedServerStoreSuccessPacket?.Invoke(packet) ?? true;
+                            break;
+                        case ServerPacketType.CyclopediaBossSlots:
+                            packet.Forward = OnReceivedServerCyclopediaBossSlots?.Invoke(packet) ?? true;
+                            break;
+                        case ServerPacketType.CyclopediaBosstiary:
+                            packet.Forward = OnReceivedServerCyclopediaBosstiary?.Invoke(packet) ?? true;
+                            break;
+                        case ServerPacketType.BossCooldown:
+                            packet.Forward = OnReceivedServerBossCooldown?.Invoke(packet) ?? true;
+                            break;
+                        case ServerPacketType.BosstiaryData:
+                            packet.Forward = OnReceivedServerBosstiaryData?.Invoke(packet) ?? true;
                             break;
                         default:
                             client.Logger.Error($"Unknown server packet: {((byte)currentPacket).ToString("X2")}, position: {packetPosition}");

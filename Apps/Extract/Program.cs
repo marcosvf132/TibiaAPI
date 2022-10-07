@@ -849,7 +849,7 @@ namespace Extract
                 // otb major version
                 WriteData(file, BitConverter.GetBytes((uint)3));
                 // otb minor version
-                WriteData(file, BitConverter.GetBytes((uint)56));
+                WriteData(file, BitConverter.GetBytes((uint)62));
 
                 // node map data
                 file.WriteByte(254);

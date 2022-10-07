@@ -353,18 +353,7 @@ namespace OXGaming.TibiaAPI.Network
 
             // Podium
             if (objectType.Flags.ShowOffSocket) {
-
-                var podiumOutfitId = ReadUInt16();
-                if (podiumOutfitId != 0) {
-                    var podiumOutfitColorHead = ReadByte();
-                    var podiumOutfitColorTorso = ReadByte();
-                    var podiumOutfitColorLegs = ReadByte();
-                    var podiumOutfitColorDetail = ReadByte();
-                    var podiumOutfitAddons = ReadByte();
-                    objectInstance.PodiumOutfitInstance = _client.AppearanceStorage.CreateOutfitInstance(podiumOutfitId, podiumOutfitColorHead, podiumOutfitColorTorso,
-                                                                           podiumOutfitColorLegs, podiumOutfitColorDetail, podiumOutfitAddons);
-                }
-
+                objectInstance.PodiumOutfitInstance = (OutfitInstance)ReadCreatureOutfit();
                 var podiumMountId = ReadUInt16();
                 if (podiumMountId != 0) {
                     var podiumMountColorHead = ReadByte();
@@ -388,12 +377,13 @@ namespace OXGaming.TibiaAPI.Network
             // Timer
             if (objectType.Flags.Expire || objectType.Flags.Expirestop || objectType.Flags.Clockexpire) {
                 objectInstance.DecayTime = ReadUInt32();
-                objectInstance.UnknownDecayByte = ReadByte();
+                objectInstance.IsBrandNew = ReadByte();
             }
 
             // Charges
             if (objectType.Flags.Wearout) {
                 objectInstance.Charges = ReadUInt32();
+                objectInstance.IsBrandNew = ReadByte();
             }
 
             return objectInstance;

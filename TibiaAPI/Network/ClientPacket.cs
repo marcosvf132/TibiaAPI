@@ -304,6 +304,10 @@ namespace OXGaming.TibiaAPI.Network
                     return new ClientPackets.OpenTransactionHistory(client);
                 case ClientPacketType.GetTransactionHistory:
                     return new ClientPackets.GetTransactionHistory(client);
+                case ClientPacketType.CyclopediaBossSlots:
+                    return new ClientPackets.CyclopediaBossSlots(client);
+                case ClientPacketType.CyclopediaBosstiary:
+                    return new ClientPackets.CyclopediaBosstiary(client);
                 default:
                     throw new Exception($"[ClientPacket.Create] Invalid packet type: {type}");
             }

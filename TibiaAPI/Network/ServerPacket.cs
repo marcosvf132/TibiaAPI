@@ -118,8 +118,8 @@ namespace OXGaming.TibiaAPI.Network
                     return new ServerPackets.GraphicalEffects(client);
                 case ServerPacketType.RemoveGraphicalEffect:
                     return new ServerPackets.RemoveGraphicalEffect(client);
-                case ServerPacketType.MissileEffect:
-                    return new ServerPackets.MissileEffect(client);
+                case ServerPacketType.Anthem:
+                    return new ServerPackets.Anthem(client);
                 case ServerPacketType.ForgingBasicData:
                     return new ServerPackets.ForgingBasicData(client);
                 case ServerPacketType.Trappers:
@@ -228,6 +228,8 @@ namespace OXGaming.TibiaAPI.Network
                     return new ServerPackets.UpdateLootContainers(client);
                 case ServerPacketType.PlayerDataTournament:
                     return new ServerPackets.PlayerDataTournament(client);
+                case ServerPacketType.BossPodium:
+                    return new ServerPackets.BossPodium(client);
                 case ServerPacketType.CyclopediaHouseActionResult:
                     return new ServerPackets.CyclopediaHouseActionResult(client);
                 case ServerPacketType.TournamentInformation:
@@ -348,6 +350,14 @@ namespace OXGaming.TibiaAPI.Network
                     return new ServerPackets.TransactionHistory(client);
                 case ServerPacketType.StoreSuccess:
                     return new ServerPackets.StoreSuccess(client);
+                case ServerPacketType.BosstiaryData:
+                    return new ServerPackets.BosstiaryData(client);
+                case ServerPacketType.BossCooldown:
+                    return new ServerPackets.BossCooldown(client);
+                case ServerPacketType.CyclopediaBosstiary:
+                    return new ServerPackets.CyclopediaBosstiary(client);
+                case ServerPacketType.CyclopediaBossSlots:
+                    return new ServerPackets.CyclopediaBossSlots(client);
                 default:
                     throw new Exception($"[ServerPacket.Create] Invalid packet type: {type}");
             }

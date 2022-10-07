@@ -122,7 +122,17 @@
         Effect = 3,
         MissileXY = 4,
         MissileYX = 5,
+        SingleSound = 6,
+        MultipleSound = 7,
         Unknown = 0x83
+    }
+
+    public enum SoundSourceType
+    {
+        Global = 0,
+        Own = 1,
+        Others = 2,
+        Creatures = 3
     }
 
     public enum PreyDataState
@@ -469,6 +479,8 @@
         InviteToChannel = 0xAB,
         ExcludeFromChannel = 0xAC,
         CyclopediaHouseAction = 0xAD,
+        CyclopediaBosstiary = 0xAE, // 12.90
+        CyclopediaBossSlots = 0xAF, // 12.90
         Highscores = 0xB1,
         PreyHuntingTaskAction = 0xBA,
         Cancel = 0xBE,
@@ -536,20 +548,44 @@
     public enum ServerPacketType
     {
         Invalid = 0x00,
+        // 0x01 - Do not exist
+        // 0x02 - Do not exist
         CreatureData = 0x03,
         SessionDumpStart = 0x04,
+        // 0x05 - Do not exist
+        // 0x06 - Do not exist
+        // 0x07 - Do not exist
+        // 0x08 - Do not exist
+        // 0x09 - Do not exist
         PendingStateEntered = 0x0A,
         ReadyForSecondaryConnection = 0x0B,
+        // 0x0C - Do not exist
+        // 0x0D - Do not exist
         WorldEntered = 0x0F,
+        // 0x10 - Do not exist
+        // 0x11 - Do not exist
+        // 0x12 - Do not exist 
+        // 0x13 - Do not exist
         LoginError = 0x14,
         LoginAdvice = 0x15,
         LoginWait = 0x16,
         LoginSuccess = 0x17,
         LogoutSession = 0x18,
         StoreButtonIndicators = 0x19,
+        // 0x1A - Do not exist
+        // 0x1B - Do not exist
+        // 0x1C - Do not exist
         Ping = 0x1D,
         PingBack = 0x1E,
         LoginChallenge = 0x1F,
+        // 0x20 - Do not exist
+        // 0x21 - Do not exist
+        // 0x22 - Do not exist
+        // 0x23 - Do not exist
+        // 0x24 - Do not exist
+        // 0x25 - Do not exist
+        // 0x26 - Do not exist
+        // 0x27 - Do not exist
         Dead = 0x28,
         Stash = 0x29,
         //DepotTileState = 0x2A,
@@ -558,6 +594,57 @@
         //SpecialContainersAvailable = 0x2C,
         TeamFinderTeamLeader = 0x2C,
         TeamFinderTeamMember = 0x2D,
+        // 0x2F - Do not exist
+        // 0x30 - Do not exist
+        // 0x31 - Do not exist
+        // 0x32 - Do not exist
+        // 0x33 - Do not exist
+        // 0x34 - Do not exist
+        // 0x35 - Do not exist
+        // 0x36 - Do not exist
+        // 0x37 - Do not exist
+        // 0x38 - Do not exist
+        // 0x39 - Do not exist
+        // 0x3A - Do not exist
+        // 0x3B - Do not exist
+        // 0x3C - Do not exist
+        // 0x3D - Do not exist
+        // 0x3F - Do not exist
+        // 0x40 - Do not exist
+        // 0x41 - Do not exist
+        // 0x42 - Do not exist
+        // 0x43 - Do not exist
+        // 0x44 - Do not exist
+        // 0x45 - Do not exist
+        // 0x46 - Do not exist
+        // 0x47 - Do not exist
+        // 0x48 - Do not exist
+        // 0x49 - Do not exist
+        // 0x4A - Do not exist
+        // 0x4B - Do not exist
+        // 0x4C - Do not exist
+        // 0x4D - Do not exist
+        // 0x4E - Do not exist
+        // 0x4F - Do not exist
+        // 0x50 - Do not exist
+        // 0x51 - Do not exist
+        // 0x52 - Do not exist
+        // 0x53 - Do not exist
+        // 0x54 - Do not exist
+        // 0x55 - Do not exist
+        // 0x56 - Do not exist
+        // 0x57 - Do not exist
+        // 0x58 - Do not exist
+        // 0x59 - Do not exist
+        // 0x5A - Do not exist
+        // 0x5B - Do not exist
+        // 0x5C - Do not exist
+        // 0x5D - Do not exist
+        // 0x5E - Do not exist
+        // 0x5F - Do not exist
+        // 0x60 - Do not exist
+        BosstiaryData = 0x61,
+        CyclopediaBossSlots = 0x62, // 12.90
         ClientCheck = 0x63,
         FullMap = 0x64,
         TopRow = 0x65,
@@ -574,6 +661,7 @@
         CreateInContainer = 0x70,
         ChangeInContainer = 0x71,
         DeleteInContainer = 0x72,
+        CyclopediaBosstiary = 0x73, // 12.90
         FriendSystemData = 0x74,
         ScreenshotEvent = 0x75,
         InspectionList = 0x76,
@@ -587,12 +675,16 @@
         CounterOffer = 0x7E,
         CloseTrade = 0x7F,
         CharacterTradeConfiguration = 0x80,
+        // 0x81 - Report text 1(U32) + 2(U16)
         Ambiente = 0x82,
         GraphicalEffects = 0x83,
         RemoveGraphicalEffect = 0x84,
-        MissileEffect = 0x85,
+        Anthem = 0x85,
 		ForgingBasicData = 0x86,
         Trappers = 0x87,
+        // 0x88 - 2(U16) + 1(U8)
+        // 0x89 - No more bytes
+        // 0x8A - Fusion result 2(U8) + 2(U16) + 1(U8)
         CreatureUpdate = 0x8B,
         CreatureHealth = 0x8C,
         CreatureLight = 0x8D,
@@ -631,6 +723,7 @@
         PrivateChannel = 0xAD,
         EditGuildMessage = 0xAE,
         ExperienceTracker = 0xAF,
+        // 0xB0 - Golden memorial 3(U32) + 12(U16)
         Highscores = 0xB1,
         OpenOwnChannel = 0xB2,
         CloseChannel = 0xB3,
@@ -642,10 +735,13 @@
         BestiaryTracker = 0xB9,
         PreyHuntingTaskBaseData = 0xBA,
         PreyHuntingTaskData = 0xBB,
+        // 0xBC - No more bytes
+        BossCooldown = 0xBD,
         TopFloor = 0xBE,
         BottomFloor = 0xBF,
         UpdateLootContainers = 0xC0,
         PlayerDataTournament = 0xC1,
+        BossPodium = 0xC2,
         CyclopediaHouseActionResult = 0xC3,
         TournamentInformation = 0xC4,
         TournamentLeaderboard = 0xC5,
@@ -706,6 +802,7 @@
         StoreCategories = 0xFB,
         StoreOffers = 0xFC,
         TransactionHistory = 0xFD,
-        StoreSuccess = 0xFE
+        StoreSuccess = 0xFE,
+        // 0xFF - Do not exist
     }
 }

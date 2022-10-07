@@ -8,24 +8,24 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
         public uint FreeCapacity { get; set; }
         public uint MaxCapacity { get; set; }
+        public uint MaxHealth { get; set; }
+        public uint MaxMana { get; set; }
+        public uint CurrentHealth { get; set; }
+        public uint CurrentMana { get; set; }
+        public uint MagicShield { get; set; }
+        public uint MaxMagicShield { get; set; }
 
         public ushort BaseXpGain { get; set; }
-        public ushort CurrentHealth { get; set; }
-        public ushort CurrentMana { get; set; }
         public ushort FoodRegeneration { get; set; }
         public ushort GrindingAddend { get; set; }
         public ushort HuntingBoostFactor { get; set; }
         public ushort Level { get; set; }
-        public ushort MaxHealth { get; set; }
-        public ushort MaxMana { get; set; }
         public ushort OfflineTrainingTime { get; set; }
         public ushort RemainingStoreXpBoostSeconds { get; set; }
         public ushort Speed { get; set; }
         public ushort Stamina { get; set; }
         public ushort StoreBoostAddend { get; set; }
         public ushort VoucherAddend { get; set; }
-        public ushort MagicShield { get; set; }
-        public ushort MaxMagicShield { get; set; }
 
         public byte LevelPercent { get; set; }
         public byte MagicLevel { get; set; }
@@ -42,8 +42,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
         public override void ParseFromNetworkMessage(NetworkMessage message)
         {
-            CurrentHealth = message.ReadUInt16();
-            MaxHealth = message.ReadUInt16();
+            CurrentHealth = message.ReadUInt32();
+            MaxHealth = message.ReadUInt32();
             FreeCapacity = message.ReadUInt32();
             Experience = message.ReadUInt64();
             Level = message.ReadUInt16();
@@ -52,8 +52,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             GrindingAddend = message.ReadUInt16();
             StoreBoostAddend = message.ReadUInt16();
             HuntingBoostFactor = message.ReadUInt16();
-            CurrentMana = message.ReadUInt16();
-            MaxMana = message.ReadUInt16();
+            CurrentMana = message.ReadUInt32();
+            MaxMana = message.ReadUInt32();
             Soul = message.ReadByte();
             Stamina = message.ReadUInt16();
             Speed = message.ReadUInt16();
@@ -61,8 +61,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             OfflineTrainingTime = message.ReadUInt16();
             RemainingStoreXpBoostSeconds = message.ReadUInt16();
             CanBuyMoreStoreXpBoosts = message.ReadBool();
-            MagicShield = message.ReadUInt16();
-            MaxMagicShield = message.ReadUInt16();
+            MagicShield = message.ReadUInt32();
+            MaxMagicShield = message.ReadUInt32();
         }
 
         public override void AppendToNetworkMessage(NetworkMessage message)

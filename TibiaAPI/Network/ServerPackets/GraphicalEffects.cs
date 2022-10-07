@@ -14,6 +14,12 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
         public byte Effect { get; set; }
 
+        public SoundSourceType Source { get; set; }
+
+
+        public byte UnknownEnum { get; set; }
+        public ushort Sound { get; set; }
+
         public GraphicalEffects(Client client)
         {
             Client = client;
@@ -47,6 +53,13 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 					var distanceAxisY = message.ReadSByte();
 					var distanceAxisX = message.ReadSByte();
 					Effects.Add((type, 0, 0, missileId, distanceAxisX, distanceAxisY));
+				} else if (type == GraphicalEffectsType.SingleSound) {
+					Source = (SoundSourceType)message.ReadByte();
+					Sound = message.ReadUInt16();
+				} else if (type == GraphicalEffectsType.MultipleSound) {
+					UnknownEnum = message.ReadByte(); // From 0 to 2, does not affect anything in game. (So far)
+					Source = (SoundSourceType)message.ReadByte();
+					Sound = message.ReadUInt16();
 				} else if (type == GraphicalEffectsType.Unknown) {
 					// This is "unknown" because a) it seems to have existed for a single
 					// client update but no longer exist as of client update 12.51.10194
@@ -80,6 +93,13 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 					message.Write(Id);
 					message.Write(DistanceY);
 					message.Write(DistanceX);
+				} else if (Type == GraphicalEffectsType.SingleSound) {
+					message.Write((byte)Source);
+					message.Write(Sound);
+				} else if (Type == GraphicalEffectsType.MultipleSound) {
+					message.Write(UnknownEnum);
+					message.Write((byte)Source);
+					message.Write(Sound);
 				} else if (Type == GraphicalEffectsType.Unknown) {
 				}
             }

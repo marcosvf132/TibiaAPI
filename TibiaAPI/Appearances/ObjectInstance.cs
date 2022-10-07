@@ -16,7 +16,7 @@ namespace OXGaming.TibiaAPI.Appearances
 
         public byte Tier { get; set; }
         public byte PodiumDirection { get; set; }
-        public byte UnknownDecayByte { get; set; }
+        public byte IsBrandNew { get; set; }
 
         public OutfitInstance PodiumOutfitInstance { get; set; }
         public OutfitInstance PodiumMountInstance { get; set; }
