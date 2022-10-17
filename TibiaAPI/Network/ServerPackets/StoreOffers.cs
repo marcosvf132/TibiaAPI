@@ -11,6 +11,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         public List<Banner> Banners { get; } = new List<Banner>();
         public List<Offer> Offers { get; } = new List<Offer>();
         public List<string> Collections { get; } = new List<string>();
+        public List<string> DisableReasons { get; } = new List<string>();
 
         public string CategoryName { get; set; }
         public string DisplaySubCategory { get; set; }
@@ -40,6 +41,11 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
 			DisplaySubCategory = message.ReadString();
 
+            DisableReasons.Capacity = message.ReadUInt16();
+            for (var i = 0; i < DisableReasons.Capacity; ++i) {
+                DisableReasons.Add(message.ReadString());
+            }
+
             Offers.Capacity = message.ReadUInt16();
             for (var i = 0; i < Offers.Capacity; ++i) {
                 var offer = new Offer
@@ -62,10 +68,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                     details.IsDisabled = message.ReadBool();
                     if (details.IsDisabled) {
                         details.DisabledReasons.Capacity = message.ReadByte();
-                        for (var x = 0; x < details.DisabledReasons.Capacity; ++x) {
-                            var disabledReason = message.ReadString();
-                            details.DisabledReasons.Add(disabledReason);
-                        }
+                        for (var x = 0; x < details.DisabledReasons.Capacity; ++x)
+                            details.DisabledReasons.Add(message.ReadUInt16());
                     }
 
                     details.HighlightState = message.ReadByte();
@@ -160,9 +164,12 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                         banner.Collection = message.ReadString();
                     } else if (banner.Type == 4) {
                         banner.OfferId = message.ReadUInt32();
+                    } else {
+                        banner.Unknown1 = message.ReadByte();
                     }
 
-                    banner.Unknown = message.ReadUInt16(); // Always 0x0200 (512)?
+                    banner.Unknown2 = message.ReadByte();
+                    banner.Unknown3 = message.ReadByte();
                     Banners.Add(banner);
                 }
                 BannerSwitchDelay = message.ReadByte();
@@ -182,6 +189,10 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                 message.Write(Collections[i]);
 
             message.Write(DisplaySubCategory);
+
+            count = Math.Min(DisableReasons.Count, ushort.MaxValue);
+            for (var i = 0; i < count; ++i)
+                message.Write(DisableReasons[i]);
 
             count = Math.Min(Offers.Count, ushort.MaxValue);
             message.Write((ushort)count);
@@ -283,8 +294,11 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                         message.Write(banner.Collection);
                     } else if (banner.Type == 4) {
                         message.Write(banner.OfferId);
+                    } else {
+                        message.Write(banner.Unknown1);
                     }
-                    message.Write(banner.Unknown);
+                    message.Write(banner.Unknown2);
+                    message.Write(banner.Unknown3);
                 }
                 message.Write(BannerSwitchDelay);
             }

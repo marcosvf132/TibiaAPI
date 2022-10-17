@@ -7,12 +7,13 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         public string Character { get; set; }
         public string Description { get; set; }
 
+        public long SpentGold { get; set; }
+        public ulong PiecePrice { get; set; }
+
         public uint Id { get; set; }
-        public uint PiecePrice { get; set; }
         public uint Timestamp { get; set; }
 
         public int PurchasedTibiaCoins { get; set; }
-        public int SpentGold { get; set; }
 
         public byte Type { get; set; }
 
@@ -30,8 +31,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             Description = message.ReadString();
             Character = message.ReadString();
             PurchasedTibiaCoins = message.ReadInt32();
-            PiecePrice = message.ReadUInt32();
-            SpentGold = message.ReadInt32();
+            PiecePrice = message.ReadUInt64();
+            SpentGold = message.ReadInt64();
         }
 
         public override void AppendToNetworkMessage(NetworkMessage message)

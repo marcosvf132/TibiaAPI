@@ -4,7 +4,7 @@ namespace OXGaming.TibiaAPI.Store
 {
     public class OfferDetails
     {
-        public List<string> DisabledReasons { get; } = new List<string>();
+        public List<ushort> DisabledReasons { get; } = new List<ushort>();
 
         public uint Id { get; set; }
         public uint Price { get; set; }
