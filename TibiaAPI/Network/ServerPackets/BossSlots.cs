@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace OXGaming.TibiaAPI.Network.ServerPackets
 {
-    public class CyclopediaBossSlots : ServerPacket
+    public class BossSlots : ServerPacket
     {
         public bool IsAnyBossUnlocked { get; set; }
 
@@ -61,10 +61,10 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         #endregion
 
 
-        public CyclopediaBossSlots(Client client)
+        public BossSlots(Client client)
         {
             Client = client;
-            PacketType = ServerPacketType.CyclopediaBossSlots;
+            PacketType = ServerPacketType.BossSlots;
         }
 
         public override void ParseFromNetworkMessage(NetworkMessage message)
@@ -123,7 +123,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
         public override void AppendToNetworkMessage(NetworkMessage message)
         {
-            message.Write((byte)ServerPacketType.CyclopediaBossSlots);
+            message.Write((byte)ServerPacketType.BossSlots);
             message.Write(Points);
             message.Write(TotalPoints);
             message.Write(EquipmentLootBonus);

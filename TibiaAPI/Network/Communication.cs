@@ -1451,7 +1451,7 @@ namespace OXGaming.TibiaAPI.Network
                             packet.Forward = OnReceivedServerBosstiaryStaticData?.Invoke(packet) ?? true;
                             break;
                         case ServerPacketType.ImbuementDurations:
-                            packet.Forward = OnReceivedServerInventoryImbuements?.Invoke(packet) ?? true;
+                            packet.Forward = OnReceivedServerImbuementDurations?.Invoke(packet) ?? true;
                             break;
                         case ServerPacketType.SkillGrid:
                             packet.Forward = OnReceivedServerSkillGrid?.Invoke(packet) ?? true;

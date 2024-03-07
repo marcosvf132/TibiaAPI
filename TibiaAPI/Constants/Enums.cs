@@ -710,7 +710,7 @@
         ExaltationDialogRefresh = 0x87,
         ExaltationHistory = 0x88,
         // 0x88 - 2(U16) + 1(U8)
-        CloseExaltationDialog = 0x90,
+        CloseExaltationDialog = 0x89,
         // 0x8A - Fusion result 2(U8) + 2(U16) + 1(U8)
         CreatureUpdate = 0x8B,
         CreatureHealth = 0x8C,
