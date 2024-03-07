@@ -14,8 +14,20 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
         public override void ParseFromNetworkMessage(NetworkMessage message)
         {
-            // TODO: Figure out all screenshot types.
             Type = message.ReadByte();
+            // 1: Achievement
+            // 2: BestiaryEntryCompleted
+            // 3: BestiaryEntryUnlocked
+            // 4: BossDefeated
+            // 5: DeathPvE
+            // 6: DeathPvP
+            // 7: LevelUp
+            // 8: PlayerKillAssist
+            // 9: PlayerKill
+            // 10: PlayerAttacking
+            // 11: TreasureFound
+            // 12: SkillUp
+            // 13: GiftOfLife
         }
 
         public override void AppendToNetworkMessage(NetworkMessage message)

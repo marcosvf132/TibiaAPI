@@ -342,13 +342,46 @@ namespace OXGaming.TibiaAPI.Network
             if (objectType.Flags.Liquidcontainer || objectType.Flags.Liquidpool || objectType.Flags.Cumulative)
                 objectInstance.Data = ReadByte();
             else if (objectType.Flags.Container) {
-                objectInstance.IsLootContainer = ReadBool();
-                if (objectInstance.IsLootContainer)
-                    objectInstance.LootCategoryFlags = ReadUInt32();
+                objectInstance.SpecialContainer = ReadByte();
+                switch ((ContainerSpecial)objectInstance.SpecialContainer) {
+                    case ContainerSpecial.None: {
+                        // Empty
+                        break;
+                    }
+                    case ContainerSpecial.LootContainer: {
+                        objectInstance.LootCategoryFlags = ReadUInt32();
+                        break;
+                    }
+                    case ContainerSpecial.ContentCounter: {
+                        objectInstance.QuiverAmount = ReadUInt32();
+                        break;
+                    }
+                    case ContainerSpecial.ManagerUnknown: {
+                        ReadUInt32(); // Loot
+                        ReadUInt32(); // Obtain
+                        break;
+                    }
+                    case ContainerSpecial.LootHighlight: {
+                        // Empty?
+                        break;
+                    }
+                    case ContainerSpecial.Obtain: {
+                        ReadUInt32(); // Obtain
+                        break;
+                    } 
+                    case ContainerSpecial.Manager: {
+                        ReadUInt32(); // Loot
+                        ReadUInt32(); // Obtain
+                        break;
+                    }
+                    default:
+                        throw new Exception($"[NetworkMessage.ReadObjectInstance] Invalid container special type: {objectInstance.SpecialContainer}");
+                }
+            }
 
-                objectInstance.IsQuiver = ReadBool();
-                if (objectInstance.IsQuiver)
-                    objectInstance.QuiverAmount = ReadUInt32();
+            // Decoration kit
+            if (objectType.Flags.DecoKit) {
+                objectInstance.DecorationAppearance = ReadUInt16();
             }
 
             // Podium
@@ -426,12 +459,11 @@ namespace OXGaming.TibiaAPI.Network
                         creature.LightColor = ReadByte();
                         creature.Speed = ReadUInt16();
 
-                        // This byte is used for icons on OTBR base.
-                        creature.Unknown = ReadByte();
-                        if (creature.Unknown == 0x01) {
-							ReadByte(); // Icon
-							ReadBool(); // Creature update
-							ReadUInt16(); // Goshnar timer
+                        var icons = ReadByte();
+                        for (var i = 0; i < icons; ++i) {
+                            ReadByte();
+                            ReadBool();
+                            ReadUInt16();
                         }
 
                         creature.PkFlag = ReadByte();
@@ -473,12 +505,11 @@ namespace OXGaming.TibiaAPI.Network
                         creature.LightColor = ReadByte();
                         creature.Speed = ReadUInt16();
 
-						// This byte is used for icons on OTBR base.
-                        creature.Unknown = ReadByte();
-                        if (creature.Unknown == 0x01) {
-							ReadByte(); // Icon
-							ReadBool(); // Reset ?
-							ReadUInt16(); // Goshnar timer
+                        var icons = ReadByte();
+                        for (var i = 0; i < icons; ++i) {
+                            ReadByte();
+                            ReadBool();
+                            ReadUInt16();
                         }
 
                         creature.PkFlag = ReadByte();
@@ -663,7 +694,7 @@ namespace OXGaming.TibiaAPI.Network
                     thingId == (int)CreatureInstanceType.OutdatedCreature ||
                     thingId == (int)CreatureInstanceType.Creature) {
                     var creature = ReadCreatureInstance(thingId, absolutePosition);
-                    var objectInstance = _client.AppearanceStorage.CreateObjectInstance((uint)CreatureInstanceType.Creature, creature.Id);
+                    var objectInstance = _client.AppearanceStorage.CreateObjectInstance((uint)CreatureInstanceType.Creature, creature.Id, creature.Name);
 
                     if (thingsCount < MapSizeW) {
                         objects.Add(objectInstance);
@@ -914,11 +945,12 @@ namespace OXGaming.TibiaAPI.Network
             Write((byte)value.Z);
         }
 
-        public void Write(OutfitInstance value)
+        public void Write(OutfitInstance value, bool ignoreEx = false)
         {
             Write((ushort)value.Id);
             if (value.Id == 0) {
-                Write((ushort)0);
+                if (!ignoreEx)
+                    Write((ushort)0);
             } else {
                 Write(value.ColorHead);
                 Write(value.ColorTorso);
@@ -942,13 +974,58 @@ namespace OXGaming.TibiaAPI.Network
                 Write((byte)value.Data);
 
             if (value.Type.Flags.Container) {
-                Write(value.IsLootContainer);
-                if (value.IsLootContainer)
-                    Write(value.LootCategoryFlags);
+                Write(value.SpecialContainer);
+                switch ((ContainerSpecial)value.SpecialContainer) {
+                    case ContainerSpecial.None: {
+                        // Empty?
+                        break;
+                    }
+                    case ContainerSpecial.LootContainer: {
+                        Write(value.LootCategoryFlags);
+                        break;
+                    }
+                    case ContainerSpecial.ContentCounter: {
+                        Write(value.QuiverAmount);
+                        break;
+                    }
+                    case ContainerSpecial.LootHighlight: {
+                        // Empty?
+                        break;
+                    }
+                    default:
+                        break;
+                }
             }
 
-            if (value.Type.FrameGroup[0].SpriteInfo.Animation != null)
-                Write(value.Phase);
+            // Decoration kit
+            if (value.Type.Flags.DecoKit) {
+                Write(value.DecorationAppearance);
+            }
+
+            // Podium
+            if (value.Type.Flags.ShowOffSocket) {
+                Write(value.PodiumOutfitInstance);
+                Write(value.PodiumMountInstance);
+                Write(value.PodiumDirection);
+                Write(value.IsPodiumVisible);
+            }
+
+            // Item tier
+            if (value.Type.Flags.Upgradeclassification != null && value.Type.Flags.Upgradeclassification.UpgradeClassification > 0) {
+                Write(value.Tier);
+            }
+
+            // Timer
+            if (value.Type.Flags.Expire || value.Type.Flags.Expirestop || value.Type.Flags.Clockexpire) {
+                Write(value.DecayTime);
+                Write(value.IsBrandNew);
+            }
+
+            // Charges
+            if (value.Type.Flags.Wearout) {
+                Write(value.Charges);
+                Write(value.IsBrandNew);
+            }
         }
 
         public void Write(Creature value, CreatureInstanceType type)

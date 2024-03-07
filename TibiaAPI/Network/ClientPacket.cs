@@ -16,6 +16,8 @@ namespace OXGaming.TibiaAPI.Network
                     return new ClientPacket();
                 case ClientPacketType.Login:
                     return new ClientPackets.Login(client);
+                case ClientPacketType.PurchaseSorting:
+                    return new ClientPackets.PurchaseSorting(client);
                 case ClientPacketType.SecondaryLogin:
                     return new ClientPackets.SecondaryLogin(client);
                 case ClientPacketType.EnterWorld:
@@ -42,6 +44,12 @@ namespace OXGaming.TibiaAPI.Network
                     return new ClientPackets.TeamFinderAssembleTeam(client);
                 case ClientPacketType.TeamFinderJoinTeam:
                     return new ClientPackets.TeamFinderJoinTeam(client);
+                case ClientPacketType.ImbuementDurations:
+                    return new ClientPackets.ImbuementDurations(client);
+                case ClientPacketType.CollectAllReward:
+                    return new ClientPackets.CollectAllReward(client);
+                case ClientPacketType.SkillGrid:
+                    return new ClientPackets.SkillGrid(client);
                 case ClientPacketType.ClientCheck:
                     return new ClientPackets.ClientCheck(client);
                 case ClientPacketType.GoPath:
@@ -188,6 +196,8 @@ namespace OXGaming.TibiaAPI.Network
                     return new ClientPackets.Cancel(client);
                 case ClientPacketType.ClaimTournamentReward:
                     return new ClientPackets.ClaimTournamentReward(client);
+                case ClientPacketType.OpenForge:
+                    return new ClientPackets.OpenForge(client);
                 case ClientPacketType.TournamentInformation:
                     return new ClientPackets.TournamentInformation(client);
                 case ClientPacketType.SubscribeToUpdates:
@@ -304,10 +314,10 @@ namespace OXGaming.TibiaAPI.Network
                     return new ClientPackets.OpenTransactionHistory(client);
                 case ClientPacketType.GetTransactionHistory:
                     return new ClientPackets.GetTransactionHistory(client);
-                case ClientPacketType.CyclopediaBossSlots:
-                    return new ClientPackets.CyclopediaBossSlots(client);
-                case ClientPacketType.CyclopediaBosstiary:
-                    return new ClientPackets.CyclopediaBosstiary(client);
+                case ClientPacketType.BossSlots:
+                    return new ClientPackets.BossSlots(client);
+                case ClientPacketType.Bosstiary:
+                    return new ClientPackets.Bosstiary(client);
                 default:
                     throw new Exception($"[ClientPacket.Create] Invalid packet type: {type}");
             }

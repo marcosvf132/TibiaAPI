@@ -73,12 +73,13 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
         public ulong Experience { get; set; }
 
+        public double Mitigation { get; set; }
+
         public uint CapacityBonus { get; set; }
         public uint CapacityCurrent { get; set; }
         public uint CapacityMax { get; set; }
         public uint RemainingDailyRewardXpBoostTime { get; set; }
         public uint RemainingStoreXpBoostTime { get; set; }
-        public uint TournamentFactor { get; set; }
         public uint HealthCurrent { get; set; }
         public uint HealthMax { get; set; }
         public uint ManaCurrent { get; set; }
@@ -199,7 +200,6 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                 Level = message.ReadUInt16();
                 LevelPercent = message.ReadByte();
                 BaseXpGain = message.ReadUInt16();
-                TournamentFactor = message.ReadUInt32();
                 GrindingAddend = message.ReadUInt16();
                 StoreXpBoostAddend = message.ReadUInt16();
                 HuntingBoostFactor = message.ReadUInt16();
@@ -273,6 +273,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                 ConvertedDamageType = message.ReadByte();
                 Armor = message.ReadUInt16();
                 Defense = message.ReadUInt16();
+                Mitigation = message.ReadDouble();
 
                 DamageReductions.Capacity = message.ReadByte();
                 for (var i = 0; i < DamageReductions.Capacity; ++i)
@@ -495,7 +496,6 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                 message.Write(Level);
                 message.Write(LevelPercent);
                 message.Write(BaseXpGain);
-                message.Write(TournamentFactor);
                 message.Write(GrindingAddend);
                 message.Write(StoreXpBoostAddend);
                 message.Write(HuntingBoostFactor);
@@ -567,6 +567,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                 message.Write(ConvertedDamageType);
                 message.Write(Armor);
                 message.Write(Defense);
+                message.Write(Mitigation);
 
                 var count = Math.Min(DamageReductions.Count, byte.MaxValue);
                 message.Write((byte)count);

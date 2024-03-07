@@ -5,13 +5,13 @@ using OXGaming.TibiaAPI.Constants;
 
 namespace OXGaming.TibiaAPI.Network.ServerPackets
 {
-    public class BossCooldown : ServerPacket
+    public class BossTracking : ServerPacket
     {
         public List<(uint id, ulong time)> BossesList { get; } = new List<(uint id, ulong time)>();
-        public BossCooldown(Client client)
+        public BossTracking(Client client)
         {
             Client = client;
-            PacketType = ServerPacketType.BossCooldown;
+            PacketType = ServerPacketType.BossTracking;
         }
 
         public override void ParseFromNetworkMessage(NetworkMessage message)
@@ -27,7 +27,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
         public override void AppendToNetworkMessage(NetworkMessage message)
         {
-            message.Write((byte)ServerPacketType.BossCooldown);
+            message.Write((byte)ServerPacketType.BossTracking);
             message.Write((ushort)BossesList.Capacity);
             foreach (var boss in BossesList) {
                 message.Write(boss.id);

@@ -39,6 +39,7 @@
         ListReroll = 0,
         BonusReroll = 1,
         MonsterSelection = 2,
+        MonsterFromList = 4,
         Option = 5
     }
 
@@ -72,12 +73,15 @@
         NoPenalty = 3
     }
 
-    public enum LootContainerType
+    public enum ContainerManagerType
     {
-        Add = 0,
-        Remove = 1,
-        Open = 2,
-        UseMainContainerAsFallback = 3
+        AddLoot = 0,
+        RemoveLoot = 1,
+        OpenLoot = 2,
+        UseMainContainerAsFallback = 3,
+        AddObtain = 4,
+        RemoveObtain = 5,
+        OpenObtain = 6,
     }
 
     public enum MarketOfferTerminationReason
@@ -153,7 +157,11 @@
         PreyBonusRerolls = 10,
         CollectionTokens = 20,
         CharmPoints = 30,
-        TournamentCoins = 40
+        TournamentCoins = 40,
+        ForgeDust = 70,
+        ForgeSliver = 71,
+        ForgeExaltedCore = 72,
+        UnknownBalanceType4 = 80
     }
 
     public enum FluidColor
@@ -230,6 +238,18 @@
         CloseFriends = 3
     }
 
+    public enum ContainerSpecial
+    {
+        None = 0,
+        LootContainer = 1,
+        ContentCounter = 2,
+        ManagerUnknown = 3, // Maybe was used on a few test servers and removed later? Original value was not being used
+        LootHighlight = 4,
+        // And the others?
+        Obtain = 8,
+        Manager = 9
+    }
+
     public enum MarketDetailField
     {
         Armor = 0,
@@ -247,13 +267,14 @@
         Uses = 12,
         WeaponType = 13,
         Weight = 14,
-        ImbuementSlots = 15,
-		MagicShield = 16,
-		Cleave = 17,
-		Reflection = 18,
-		PerfectShot = 19,
-		UpgradeClassification = 20,
-		UpgradeTier = 21
+        Augments = 15,
+        ImbuementSlots = 16,
+		MagicShield = 17,
+		Cleave = 18,
+		Reflection = 19,
+		PerfectShot = 20,
+		UpgradeClassification = 21,
+		UpgradeTier = 22
     }
 
     public enum FluidType
@@ -399,6 +420,7 @@
         Login = 0x0A,
         SecondaryLogin = 0x0B,
         EnterWorld = 0x0F,
+        PurchaseSorting = 0x10,
         QuitGame = 0x14,
         ConnectionPingBack = 0x1C,
         Ping = 0x1D,
@@ -410,6 +432,8 @@
         PartyHuntAnalyser = 0x2B,
         TeamFinderAssembleTeam = 0x2C,
         TeamFinderJoinTeam = 0x2D,
+        ImbuementDurations = 0x60,
+        SkillGrid = 0x61,
         ClientCheck = 0x63,
         GoPath = 0x64,
         GoNorth = 0x65,
@@ -479,11 +503,12 @@
         InviteToChannel = 0xAB,
         ExcludeFromChannel = 0xAC,
         CyclopediaHouseAction = 0xAD,
-        CyclopediaBosstiary = 0xAE, // 12.90
-        CyclopediaBossSlots = 0xAF, // 12.90
+        Bosstiary = 0xAE,
+        BossSlots = 0xAF,
         Highscores = 0xB1,
         PreyHuntingTaskAction = 0xBA,
         Cancel = 0xBE,
+        OpenForge = 0xC0,
         ClaimTournamentReward = 0xC3,
         TournamentInformation = 0xC4,
         SubscribeToUpdates = 0xC6,
@@ -542,14 +567,15 @@
         RequestShopOffers = 0xFB,
         BuyIngameShopOffer = 0xFC,
         OpenTransactionHistory = 0xFD,
-        GetTransactionHistory = 0xFE
+        GetTransactionHistory = 0xFE,
+        CollectAllReward = 0xFF
     }
 
     public enum ServerPacketType
     {
         Invalid = 0x00,
-        // 0x01 - Do not exist
-        // 0x02 - Do not exist
+        // 0x01 - GAMESERVER_MESSAGE_TYPE_KEYFRAMEBEGIN
+        // 0x02 - GAMESERVER_MESSAGE_TYPE_KEYFRAMEEND
         CreatureData = 0x03,
         SessionDumpStart = 0x04,
         // 0x05 - Do not exist
@@ -572,7 +598,7 @@
         LoginSuccess = 0x17,
         LogoutSession = 0x18,
         StoreButtonIndicators = 0x19,
-        // 0x1A - Do not exist
+        BugReportAllowed = 0x1A,
         // 0x1B - Do not exist
         // 0x1C - Do not exist
         Ping = 0x1D,
@@ -638,13 +664,13 @@
         // 0x59 - Do not exist
         // 0x5A - Do not exist
         // 0x5B - Do not exist
-        // 0x5C - Do not exist
-        // 0x5D - Do not exist
-        // 0x5E - Do not exist
-        // 0x5F - Do not exist
-        // 0x60 - Do not exist
-        BosstiaryData = 0x61,
-        CyclopediaBossSlots = 0x62, // 12.90
+        // 0x5C - Do not exist 
+        ImbuementDurations = 0x5D,
+        PassiveAbilityData = 0x5E,
+        SkillGrid = 0x5F,
+        UnknownNewPacket2 = 0x60,
+        BosstiaryStaticData = 0x61,
+        BossSlots = 0x62,
         ClientCheck = 0x63,
         FullMap = 0x64,
         TopRow = 0x65,
@@ -661,7 +687,7 @@
         CreateInContainer = 0x70,
         ChangeInContainer = 0x71,
         DeleteInContainer = 0x72,
-        CyclopediaBosstiary = 0x73, // 12.90
+        Bosstiary = 0x73,
         FriendSystemData = 0x74,
         ScreenshotEvent = 0x75,
         InspectionList = 0x76,
@@ -680,10 +706,11 @@
         GraphicalEffects = 0x83,
         RemoveGraphicalEffect = 0x84,
         Anthem = 0x85,
-		ForgingBasicData = 0x86,
-        Trappers = 0x87,
+		ExaltationBaseData = 0x86,
+        ExaltationDialogRefresh = 0x87,
+        ExaltationHistory = 0x88,
         // 0x88 - 2(U16) + 1(U8)
-        // 0x89 - No more bytes
+        CloseExaltationDialog = 0x90,
         // 0x8A - Fusion result 2(U8) + 2(U16) + 1(U8)
         CreatureUpdate = 0x8B,
         CreatureHealth = 0x8C,
@@ -694,7 +721,6 @@
         CreatureParty = 0x91,
         CreatureUnpass = 0x92,
         CreatureMarks = 0x93,
-        //CreaturePvpHelpers = 0x94,
         DepotSearchResults = 0x94,
         CreatureType = 0x95,
         EditText = 0x96,
@@ -723,7 +749,6 @@
         PrivateChannel = 0xAD,
         EditGuildMessage = 0xAE,
         ExperienceTracker = 0xAF,
-        // 0xB0 - Golden memorial 3(U32) + 12(U16)
         Highscores = 0xB1,
         OpenOwnChannel = 0xB2,
         CloseChannel = 0xB3,
@@ -735,13 +760,13 @@
         BestiaryTracker = 0xB9,
         PreyHuntingTaskBaseData = 0xBA,
         PreyHuntingTaskData = 0xBB,
-        // 0xBC - No more bytes
-        BossCooldown = 0xBD,
+        UnknownNewPacket3 = 0xBC,
+        BossTracking = 0xBD,
         TopFloor = 0xBE,
         BottomFloor = 0xBF,
         UpdateLootContainers = 0xC0,
         PlayerDataTournament = 0xC1,
-        BossPodium = 0xC2,
+        ConfigureBossPodium = 0xC2,
         CyclopediaHouseActionResult = 0xC3,
         TournamentInformation = 0xC4,
         TournamentLeaderboard = 0xC5,
@@ -768,7 +793,6 @@
         CyclopediaCharacterInfo = 0xDA,
         HirelingNameChange = 0xDB,
         TutorialHint = 0xDC,
-        //AutomapFlag = 0xDD,
         CyclopediaMapData = 0xDD,
         DailyRewardCollectionState = 0xDE, /////////////
         CreditBalance = 0xDF,
@@ -778,7 +802,7 @@
         CloseRewardWall = 0xE3, ///////////////
         DailyRewardBasic = 0xE4, ///////////////
         DailyRewardHistory = 0xE5, ///////////////
-        PreyFreeListRerollAvailability = 0xE6, ///////////////
+        PreyFreeListRerollAvailability = 0xE6, // BosstiaryHighlight
         PreyTimeLeft = 0xE7, ///////////////
         PreyData = 0xE8, ///////////////
         PreyPrices = 0xE9, ///////////////

@@ -2,13 +2,13 @@
 
 namespace OXGaming.TibiaAPI.Network.ClientPackets
 {
-    public class CyclopediaBosstiary : ClientPacket
+    public class Bosstiary : ClientPacket
     {
 
-        public CyclopediaBosstiary(Client client)
+        public Bosstiary(Client client)
         {
             Client = client;
-            PacketType = ClientPacketType.CyclopediaBosstiary;
+            PacketType = ClientPacketType.Bosstiary;
         }
 
         public override void ParseFromNetworkMessage(NetworkMessage message)
@@ -17,7 +17,7 @@ namespace OXGaming.TibiaAPI.Network.ClientPackets
 
         public override void AppendToNetworkMessage(NetworkMessage message)
         {
-            message.Write((byte)ClientPacketType.CyclopediaBosstiary);
+            message.Write((byte)ClientPacketType.Bosstiary);
         }
     }
 }

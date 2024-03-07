@@ -27,10 +27,10 @@ namespace OXGaming.TibiaAPI.Appearances
             }
         }
 
-        public ObjectInstance CreateObjectInstance(uint id, uint data)
+        public ObjectInstance CreateObjectInstance(uint id, uint data, string append = "")
         {
-            if (id >= (uint)CreatureInstanceType.Creature && id <= lastObjectId)
-                return new ObjectInstance(id, appearances.Object.FirstOrDefault(i => i.Id == id), data);
+            if (id >= (uint)CreatureInstanceType.Creature && id <= lastObjectId) 
+                return new ObjectInstance(id, appearances.Object.FirstOrDefault(i => i.Id == id), data, append);
 
             return null;
         }

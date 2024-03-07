@@ -40,7 +40,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                 Id == (int)CreatureInstanceType.OutdatedCreature ||
                 Id == (int)CreatureInstanceType.Creature) {
                 Creature = message.ReadCreatureInstance(Id, Position);
-                ObjectInstance = Client.AppearanceStorage.CreateObjectInstance((uint)CreatureInstanceType.Creature, Creature.Id);
+                ObjectInstance = Client.AppearanceStorage.CreateObjectInstance((uint)CreatureInstanceType.Creature, Creature.Id, Creature.Name);
             } else {
                 ObjectInstance = message.ReadObjectInstance(Id);
             }

@@ -10,6 +10,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         public List<(ushort RaceId, uint TotalKills, ushort StageOneKills, ushort StageTwoKills, ushort StageThreeKills, bool IsComplete)> Creatures { get; } =
             new List<(ushort RaceId, uint TotalKills, ushort StageOneKills, ushort StageTwoKills, ushort StageThreeKills, bool IsComplete)>();
 
+        public byte Type { get; set; }
+
         public BestiaryTracker(Client client)
         {
             Client = client;
@@ -18,6 +20,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
         public override void ParseFromNetworkMessage(NetworkMessage message)
         {
+            Type = message.ReadByte();
             Creatures.Capacity = message.ReadByte();
             for (var i = 0; i < Creatures.Capacity; ++i) {
                 var raceId = message.ReadUInt16();
@@ -32,6 +35,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
         public override void AppendToNetworkMessage(NetworkMessage message)
         {
+            message.Write(Type);
             message.Write((byte)ServerPacketType.BestiaryTracker);
             var count = Math.Min(Creatures.Capacity, byte.MaxValue);
             message.Write((byte)count);

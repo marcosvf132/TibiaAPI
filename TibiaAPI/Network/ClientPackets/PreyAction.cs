@@ -10,6 +10,8 @@ namespace OXGaming.TibiaAPI.Network.ClientPackets
         public byte Option { get; set; }
         public byte PreyId { get; set; }
 
+        public ushort MonsterId { get; set; }
+
         public PreyAction(Client client)
         {
             Client = client;
@@ -28,6 +30,10 @@ namespace OXGaming.TibiaAPI.Network.ClientPackets
             {
                 Option = message.ReadByte(); // 0 = None, 1 = Automatic Bonus Reroll, 2 = Lock Prey
             }
+            else if (ActionType == PreyActionType.MonsterFromList)
+            {
+                MonsterId =  message.ReadUInt16();
+            }
         }
 
         public override void AppendToNetworkMessage(NetworkMessage message)
@@ -42,6 +48,10 @@ namespace OXGaming.TibiaAPI.Network.ClientPackets
             else if (ActionType == PreyActionType.Option)
             {
                 message.Write(Option);
+            }
+            else if (ActionType == PreyActionType.MonsterFromList)
+            {
+                message.Write(MonsterId);
             }
         }
     }

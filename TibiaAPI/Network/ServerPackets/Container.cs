@@ -8,6 +8,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 {
     public class Container : ServerPacket
     {
+        public List<(byte Id, string Name)> Categories { get; } = new List<(byte Id, string Name)>();
         public List<ObjectInstance> ContainerObjects { get; } = new List<ObjectInstance>();
 
         public ObjectInstance ContainerObject { get; set; }
@@ -19,6 +20,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
         public byte ContainerId { get; set; }
         public byte NumberOfSlotsPerPage { get; set; }
+        public byte Category { get; set; }
 
         public bool IsDragAndDropEnabled { get; set; }
         public bool IsPaginationEnabled { get; set; }
@@ -44,10 +46,17 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             IsPaginationEnabled = message.ReadBool();
             NumberOfTotalObjects = message.ReadUInt16();
             IndexOfFirstObject = message.ReadUInt16();
-
             ContainerObjects.Capacity = message.ReadByte();
             for (var i = 0; i < ContainerObjects.Capacity; ++i)
                 ContainerObjects.Add(message.ReadObjectInstance());
+            
+            Category = message.ReadByte();
+            Categories.Capacity = message.ReadByte();
+            for (var i = 0; i < Categories.Capacity; i++) {
+                var id = message.ReadByte();
+                var name = message.ReadString();
+                Categories.Add((id, name));
+            }
         }
 
         public override void AppendToNetworkMessage(NetworkMessage message)
@@ -69,6 +78,14 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             message.Write((byte)count);
             for (var i = 0; i < count; ++i)
                 message.Write(ContainerObjects[i]);
+
+            message.Write(Category);
+            message.Write((byte)Categories.Capacity);
+            for (var i = 0; i < Categories.Capacity; i++) {
+                var (Id, Name) = Categories[i];
+                message.Write(Id);
+                message.Write(Name);
+            }
         }
     }
 }

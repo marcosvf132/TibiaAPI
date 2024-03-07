@@ -120,10 +120,16 @@ namespace OXGaming.TibiaAPI.Network
                     return new ServerPackets.RemoveGraphicalEffect(client);
                 case ServerPacketType.Anthem:
                     return new ServerPackets.Anthem(client);
-                case ServerPacketType.ForgingBasicData:
-                    return new ServerPackets.ForgingBasicData(client);
-                case ServerPacketType.Trappers:
-                    return new ServerPackets.Trappers(client);
+                case ServerPacketType.BugReportAllowed:
+                    return new ServerPackets.BugReportAllowed(client);
+                case ServerPacketType.ExaltationBaseData:
+                    return new ServerPackets.ExaltationBaseData(client);
+                case ServerPacketType.ExaltationDialogRefresh:
+                    return new ServerPackets.ExaltationDialogRefresh(client);
+                case ServerPacketType.ExaltationHistory:
+                    return new ServerPackets.ExaltationHistory(client);
+                case ServerPacketType.CloseExaltationDialog:
+                    return new ServerPackets.CloseExaltationDialog(client);
                 case ServerPacketType.CreatureUpdate:
                     return new ServerPackets.CreatureUpdate(client);
                 case ServerPacketType.CreatureHealth:
@@ -220,6 +226,8 @@ namespace OXGaming.TibiaAPI.Network
                     return new ServerPackets.PreyHuntingTaskBaseData(client);
                 case ServerPacketType.PreyHuntingTaskData:
                     return new ServerPackets.PreyHuntingTaskData(client);
+                case ServerPacketType.UnknownNewPacket3:
+                    return new ServerPackets.UnknownNewPacket3(client);
                 case ServerPacketType.TopFloor:
                     return new ServerPackets.TopFloor(client);
                 case ServerPacketType.BottomFloor:
@@ -228,8 +236,8 @@ namespace OXGaming.TibiaAPI.Network
                     return new ServerPackets.UpdateLootContainers(client);
                 case ServerPacketType.PlayerDataTournament:
                     return new ServerPackets.PlayerDataTournament(client);
-                case ServerPacketType.BossPodium:
-                    return new ServerPackets.BossPodium(client);
+                case ServerPacketType.ConfigureBossPodium:
+                    return new ServerPackets.ConfigureBossPodium(client);
                 case ServerPacketType.CyclopediaHouseActionResult:
                     return new ServerPackets.CyclopediaHouseActionResult(client);
                 case ServerPacketType.TournamentInformation:
@@ -350,14 +358,22 @@ namespace OXGaming.TibiaAPI.Network
                     return new ServerPackets.TransactionHistory(client);
                 case ServerPacketType.StoreSuccess:
                     return new ServerPackets.StoreSuccess(client);
-                case ServerPacketType.BosstiaryData:
-                    return new ServerPackets.BosstiaryData(client);
-                case ServerPacketType.BossCooldown:
-                    return new ServerPackets.BossCooldown(client);
-                case ServerPacketType.CyclopediaBosstiary:
-                    return new ServerPackets.CyclopediaBosstiary(client);
-                case ServerPacketType.CyclopediaBossSlots:
-                    return new ServerPackets.CyclopediaBossSlots(client);
+                case ServerPacketType.BosstiaryStaticData:
+                    return new ServerPackets.BosstiaryStaticData(client);
+                case ServerPacketType.BossTracking:
+                    return new ServerPackets.BossTracking(client);
+                case ServerPacketType.Bosstiary:
+                    return new ServerPackets.Bosstiary(client);
+                case ServerPacketType.BossSlots:
+                    return new ServerPackets.BossSlots(client);
+                case ServerPacketType.ImbuementDurations:
+                    return new ServerPackets.ImbuementDurations(client);
+                case ServerPacketType.SkillGrid:
+                    return new ServerPackets.SkillGrid(client);
+                case ServerPacketType.PassiveAbilityData:
+                    return new ServerPackets.PassiveAbilityData(client);
+                case ServerPacketType.UnknownNewPacket2:
+                    return new ServerPackets.UnknownNewPacket2(client);
                 default:
                     throw new Exception($"[ServerPacket.Create] Invalid packet type: {type}");
             }

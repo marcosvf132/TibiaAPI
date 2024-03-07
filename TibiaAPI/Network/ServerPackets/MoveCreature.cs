@@ -50,6 +50,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                 CreatureId = message.ReadUInt32();
                 objectInstance = Client.AppearanceStorage.CreateObjectInstance((uint)CreatureInstanceType.Creature, CreatureId);
                 creature = Client.CreatureStorage.GetCreature(objectInstance.Data);
+                objectInstance.Append = creature.Name;
                 if (creature == null) {
                     var skips = message.ReadBytes(5);
                     Client.Logger.Error($"[MoveCreature.ParseFromNetworkMessage] Creature {CreatureId} not found, skipping {skips.Length} byte(s) left.");

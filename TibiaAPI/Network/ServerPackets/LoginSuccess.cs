@@ -16,10 +16,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
         public byte ReactivateAccountsCampaignId { get; set; }
         public byte StoreCreditPackageSize { get; set; }
-        public byte TournamentType { get; set; }
         public byte WorldType { get; set; }
 
-        public bool BugReportsAllowed { get; set; }
         public bool CanChangePvpFramingOption { get; set; }
         public bool EnableExpertModeButton { get; set; }
 
@@ -40,14 +38,12 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             SpeedA = message.ReadDouble();
             SpeedB = message.ReadDouble();
             SpeedC = message.ReadDouble();
-            BugReportsAllowed = message.ReadBool();
             CanChangePvpFramingOption = message.ReadBool();
             EnableExpertModeButton = message.ReadBool();
             StoreBaseUrl = message.ReadString();
             StoreCreditPackageSize = message.ReadByte();
             ReactivateAccountsCampaignId = message.ReadByte();
             WorldType = message.ReadByte();
-            TournamentType = message.ReadByte();
         }
 
         public override void AppendToNetworkMessage(NetworkMessage message)
@@ -58,14 +54,12 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             message.Write(SpeedA);
             message.Write(SpeedB);
             message.Write(SpeedC);
-            message.Write(BugReportsAllowed);
             message.Write(CanChangePvpFramingOption);
             message.Write(EnableExpertModeButton);
             message.Write(StoreBaseUrl);
             message.Write(StoreCreditPackageSize);
             message.Write(ReactivateAccountsCampaignId);
             message.Write(WorldType);
-            message.Write(TournamentType);
         }
     }
 }

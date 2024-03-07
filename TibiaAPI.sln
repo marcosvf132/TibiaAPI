@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watch", "Apps\Watch\Watch.c
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Redact", "Apps\Redact\Redact.csproj", "{F9D5BF93-D832-4AA0-9B1E-2FAE3E5235A2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogReader", "Apps\LogReader\LogReader.csproj", "{F9D5BF94-D832-4AA0-9B1E-2FAE3E5235A2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{F9D5BF93-D832-4AA0-9B1E-2FAE3E5235A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9D5BF93-D832-4AA0-9B1E-2FAE3E5235A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9D5BF93-D832-4AA0-9B1E-2FAE3E5235A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9D5BF94-D832-4AA0-9B1E-2FAE3E5235A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9D5BF94-D832-4AA0-9B1E-2FAE3E5235A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9D5BF94-D832-4AA0-9B1E-2FAE3E5235A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9D5BF94-D832-4AA0-9B1E-2FAE3E5235A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,6 +56,7 @@ Global
 		{75DB22C7-8FE1-4BF6-8778-AE67B236DFED} = {C086BFA7-CE77-4DDF-9474-C65709DBA8A8}
 		{D9E8B07D-C3D8-431D-8E1C-B52EE2AF49C9} = {C086BFA7-CE77-4DDF-9474-C65709DBA8A8}
 		{F9D5BF93-D832-4AA0-9B1E-2FAE3E5235A2} = {C086BFA7-CE77-4DDF-9474-C65709DBA8A8}
+		{F9D5BF94-D832-4AA0-9B1E-2FAE3E5235A2} = {C086BFA7-CE77-4DDF-9474-C65709DBA8A8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {779085CF-5BE0-48BA-A204-511A8914A67C}

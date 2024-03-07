@@ -63,7 +63,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
                         Price = message.ReadUInt32()
                     };
 
-                    details.IsConfirmedPrice = message.ReadBool();
+                    details.IsConfirmedPrice = message.ReadByte();
 
                     details.IsDisabled = message.ReadBool();
                     if (details.IsDisabled) {

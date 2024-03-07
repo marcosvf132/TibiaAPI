@@ -2,22 +2,25 @@
 
 namespace OXGaming.TibiaAPI.Network.ClientPackets
 {
-    public class BossSlots : ClientPacket
+    public class PurchaseSorting : ClientPacket
     {
+        public bool Toggle { get; set; }
 
-        public BossSlots(Client client)
+        public PurchaseSorting(Client client)
         {
             Client = client;
-            PacketType = ClientPacketType.BossSlots;
+            PacketType = ClientPacketType.PurchaseSorting;
         }
 
         public override void ParseFromNetworkMessage(NetworkMessage message)
         {
+            Toggle = message.ReadBool();
         }
 
         public override void AppendToNetworkMessage(NetworkMessage message)
         {
-            message.Write((byte)ClientPacketType.BossSlots);
+            message.Write((byte)ClientPacketType.PurchaseSorting);
+            message.Write(Toggle);
         }
     }
 }

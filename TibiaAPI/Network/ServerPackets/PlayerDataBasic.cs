@@ -7,7 +7,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 {
     public class PlayerDataBasic : ServerPacket
     {
-        public List<byte> KnownSpells { get; } = new List<byte>();
+        public List<ushort> KnownSpells { get; } = new List<ushort>();
 
         public uint PremiumUntil { get; set; }
 
@@ -32,7 +32,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
             KnownSpells.Capacity = message.ReadUInt16();
             for (var i = 0; i < KnownSpells.Capacity; ++i)
-                KnownSpells.Add(message.ReadByte());
+                KnownSpells.Add(message.ReadUInt16());
 
             MagicShield = message.ReadByte();
         }

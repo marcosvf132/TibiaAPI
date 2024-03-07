@@ -10,20 +10,24 @@ namespace OXGaming.TibiaAPI.Appearances
         public uint Data { get; set; }
         public uint LootCategoryFlags { get; set; }
 
-        public bool IsLootContainer { get; set; } = false;
-        public bool IsPodiumVisible { get; set; } = false;
-        public bool IsQuiver { get; set; } = false;
+        public ushort DecorationAppearance { get; set; }
 
+        public bool IsPodiumVisible { get; set; } = false;
+
+        public byte SpecialContainer { get; set; }
         public byte Tier { get; set; }
         public byte PodiumDirection { get; set; }
         public byte IsBrandNew { get; set; }
 
+        public string Append { get; set; } = "";
+
         public OutfitInstance PodiumOutfitInstance { get; set; }
         public OutfitInstance PodiumMountInstance { get; set; }
 
-        public ObjectInstance(uint id, Appearance type, uint data = 0) : base(id, type)
+        public ObjectInstance(uint id, Appearance type, uint data = 0, string append = "") : base(id, type)
         {
             Data = data;
+            Append = append;
         }
     }
 }

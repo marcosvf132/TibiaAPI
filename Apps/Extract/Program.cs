@@ -718,10 +718,18 @@ namespace Extract
                                 AddSpawnEntry(creature);
 
                             if (_extractMonsterData && creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Monster && !_knownMonsterIds.Contains(creature.Id)) {
-                                _monsterFile.WriteLine($"{creature.Name} {creature.Position}");
+                                if (creature.Outfit != null) {
+                                    _monsterFile.WriteLine($"Monster: {creature.Name} at {creature.Position} with appearance: {creature.Outfit.ToString()}");
+                                } else {
+                                    _monsterFile.WriteLine($"Monster: {creature.Name} at {creature.Position} with unknown appearance");
+                                }
                                 _knownMonsterIds.Add(creature.Id);
                             } else if (_extractNpcData && creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Npc && !_knownNpcIds.Contains(creature.Id)) {
-                                _npcFile.WriteLine($"{creature.Name} {creature.Position}");
+                                if (creature.Outfit != null) {
+                                    _npcFile.WriteLine($"Npc: {creature.Name} at {creature.Position} with appearance: {creature.Outfit.ToString()}");
+                                } else {
+                                    _npcFile.WriteLine($"Npc: {creature.Name} at {creature.Position} with unknown appearance");
+                                }
                                 _knownNpcIds.Add(creature.Id);
                             }
                         }
@@ -739,10 +747,18 @@ namespace Extract
                     AddSpawnEntry(p.Creature);
 
                 if (_extractMonsterData && p.Creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Monster && !_knownMonsterIds.Contains(p.Creature.Id)) {
-                    _monsterFile.WriteLine($"{p.Creature.Name} {p.Creature.Position}");
+                    if (p.Creature.Outfit != null) {
+                        _monsterFile.WriteLine($"Monster: {p.Creature.Name} at {p.Creature.Position} with appearance: {p.Creature.Outfit.ToString()}");
+                    } else {
+                        _monsterFile.WriteLine($"Monster: {p.Creature.Name} at {p.Creature.Position} with unknown appearance");
+                    }
                     _knownMonsterIds.Add(p.Creature.Id);
                 } else if (_extractNpcData && p.Creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Npc && !_knownNpcIds.Contains(p.Creature.Id)) {
-                    _npcFile.WriteLine($"{p.Creature.Name} {p.Creature.Position}");
+                    if (p.Creature.Outfit != null) {
+                        _npcFile.WriteLine($"Npc: {p.Creature.Name} at {p.Creature.Position} with appearance: {p.Creature.Outfit.ToString()}");
+                    } else {
+                        _npcFile.WriteLine($"Npc: {p.Creature.Name} at {p.Creature.Position} with unknown appearance");
+                    }
                     _knownNpcIds.Add(p.Creature.Id);
                 }
             }
@@ -759,10 +775,18 @@ namespace Extract
                     AddSpawnEntry(p.Creature);
 
                 if (_extractMonsterData && p.Creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Monster && !_knownMonsterIds.Contains(p.Creature.Id)) {
-                    _monsterFile.WriteLine($"{p.Creature.Name} {p.Creature.Position}");
+                    if (p.Creature.Outfit != null) {
+                        _monsterFile.WriteLine($"Monster: {p.Creature.Name} at {p.Creature.Position} with appearance: {p.Creature.Outfit.ToString()}");
+                    } else {
+                        _monsterFile.WriteLine($"Monster: {p.Creature.Name} at {p.Creature.Position} with unknown appearance");
+                    }
                     _knownMonsterIds.Add(p.Creature.Id);
                 } else if (_extractNpcData && p.Creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Npc && !_knownNpcIds.Contains(p.Creature.Id)) {
-                    _npcFile.WriteLine($"{p.Creature.Name} {p.Creature.Position}");
+                    if (p.Creature.Outfit != null) {
+                        _npcFile.WriteLine($"Npc: {p.Creature.Name} at {p.Creature.Position} with appearance: {p.Creature.Outfit.ToString()}");
+                    } else {
+                        _npcFile.WriteLine($"Npc: {p.Creature.Name} at {p.Creature.Position} with unknown appearance");
+                    }
                     _knownNpcIds.Add(p.Creature.Id);
                 }
             }
@@ -779,10 +803,18 @@ namespace Extract
                     AddSpawnEntry(p.Creature);
 
                 if (_extractMonsterData && p.Creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Monster && !_knownMonsterIds.Contains(p.Creature.Id)) {
-                    _monsterFile.WriteLine($"{p.Creature.Name} {p.Creature.Position}");
+                    if (p.Creature.Outfit != null) {
+                        _monsterFile.WriteLine($"Monster: {p.Creature.Name} at {p.Creature.Position} with appearance: {p.Creature.Outfit.ToString()}");
+                    } else {
+                        _monsterFile.WriteLine($"Monster: {p.Creature.Name} at {p.Creature.Position} with unknown appearance");
+                    }
                     _knownMonsterIds.Add(p.Creature.Id);
                 } else if (_extractNpcData && p.Creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Npc && !_knownNpcIds.Contains(p.Creature.Id)) {
-                    _npcFile.WriteLine($"{p.Creature.Name} {p.Creature.Position}");
+                    if (p.Creature.Outfit != null) {
+                        _npcFile.WriteLine($"Npc: {p.Creature.Name} at {p.Creature.Position} with appearance: {p.Creature.Outfit.ToString()}");
+                    } else {
+                        _npcFile.WriteLine($"Npc: {p.Creature.Name} at {p.Creature.Position} with unknown appearance");
+                    }
                     _knownNpcIds.Add(p.Creature.Id);
                 }
             }
@@ -814,10 +846,18 @@ namespace Extract
                                 AddSpawnEntry(creature);
 
                             if (_extractMonsterData && creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Monster && !_knownMonsterIds.Contains(creature.Id)) {
-                                _monsterFile.WriteLine($"{creature.Name} {creature.Position}");
+                                if (creature.Outfit != null) {
+                                    _monsterFile.WriteLine($"Monster: {creature.Name} at {creature.Position} with appearance: {creature.Outfit.ToString()}");
+                                } else {
+                                    _monsterFile.WriteLine($"Monster: {creature.Name} at {creature.Position} with unknown appearance");
+                                }
                                 _knownMonsterIds.Add(creature.Id);
                             } else if (_extractNpcData && creature.Type == OXGaming.TibiaAPI.Constants.CreatureType.Npc && !_knownNpcIds.Contains(creature.Id)) {
-                                _npcFile.WriteLine($"{creature.Name} {creature.Position}");
+                                if (creature.Outfit != null) {
+                                    _npcFile.WriteLine($"Npc: {creature.Name} at {creature.Position} with appearance: {creature.Outfit.ToString()}");
+                                } else {
+                                    _npcFile.WriteLine($"Npc: {creature.Name} at {creature.Position} with unknown appearance");
+                                }
                                 _knownNpcIds.Add(creature.Id);
                             }
                         }

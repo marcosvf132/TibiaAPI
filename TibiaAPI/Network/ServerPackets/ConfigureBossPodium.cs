@@ -6,7 +6,7 @@ using OXGaming.TibiaAPI.Utilities;
 
 namespace OXGaming.TibiaAPI.Network.ServerPackets
 {
-    public class BossPodium : ServerPacket
+    public class ConfigureBossPodium : ServerPacket
     {
         public bool IsPodiumVisible { get; set; }
         public bool IsBossVisible { get; set; }
@@ -17,10 +17,10 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         public Position Position { get; set; }
         public OutfitInstance SelectedBossOutfit { get; set; }
         public List<(string Name, uint Id, OutfitInstance Outfit)> UnlockedBosses { get; } = new List<(string Name, uint Id, OutfitInstance Outfit)>();
-        public BossPodium(Client client)
+        public ConfigureBossPodium(Client client)
         {
             Client = client;
-            PacketType = ServerPacketType.BossPodium;
+            PacketType = ServerPacketType.ConfigureBossPodium;
         }
 
         public override void ParseFromNetworkMessage(NetworkMessage message)
@@ -45,7 +45,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
         public override void AppendToNetworkMessage(NetworkMessage message)
         {
-            message.Write((byte)ServerPacketType.BossPodium);
+            message.Write((byte)ServerPacketType.ConfigureBossPodium);
             message.Write(SelectedBossOutfit);
             message.Write(UnknownUshort);
             message.Write((ushort)UnlockedBosses.Capacity);

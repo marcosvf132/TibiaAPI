@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 using OXGaming.TibiaAPI.Appearances;
@@ -18,6 +18,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
         public string PlayerName { get; set; }
 
+        public uint PlayerId { get; set; }
+
         public bool IsPlayer { get; set; }
         public bool IsCyclopedia { get; set; }
 
@@ -31,6 +33,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         {
             IsPlayer = message.ReadBool();
             IsCyclopedia = message.ReadBool();
+            PlayerId = message.ReadUInt32();
             Items.Capacity = message.ReadByte();
             for (var i = 0; i < Items.Capacity; ++i) {
                 var slotId = IsPlayer ? message.ReadByte() : (byte)0;
@@ -70,6 +73,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
             message.Write(IsPlayer);
             message.Write(IsCyclopedia);
+            message.Write(PlayerId);
             var count = Math.Min(Items.Count, byte.MaxValue);
             message.Write((byte)count);
             for (var i = 0; i < count; ++i) {

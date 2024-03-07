@@ -2,11 +2,14 @@
 using OXGaming.TibiaAPI.Appearances;
 using OXGaming.TibiaAPI.Constants;
 using OXGaming.TibiaAPI.Creatures;
+using System.Collections.Generic;
 
 namespace OXGaming.TibiaAPI.Network.ServerPackets
 {
     public class CreatureUpdate : ServerPacket
     {
+        public List<(uint id, bool update, ushort counter)> Icons { get; } = new List<(uint id, bool update, ushort counter)>();
+
         public byte UnknownByte1 { get; set; }
 
         public Creature Creature { get; set; }
@@ -20,7 +23,6 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         public bool Status { get; set; }
         public byte Vocation { get; set; }
         public byte Type { get; set; }
-        public byte Icon { get; set; }
 		
         public bool Update { get; set; }
         public bool ShowIcon { get; set; }
@@ -47,12 +49,13 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             } else if (Type == (byte)CreatureUpdateType.Vocation) {
                 Vocation = message.ReadByte();
             } else if (Type == (byte)CreatureUpdateType.Icon) {
-                ShowIcon = message.ReadBool();
-				if (ShowIcon) {
-					Icon = message.ReadByte();
-					Update = message.ReadBool();
-					Counter = message.ReadUInt16();
-				}
+                Icons.Capacity = message.ReadByte();
+                for (var i = 0; i < Icons.Capacity; ++i) {
+					var id = message.ReadByte();
+					var update = message.ReadBool();
+					var counter = message.ReadUInt16();
+                    Icons.Add((id, update, counter));
+                }
             } else {
 				throw new Exception($"[CreatureUpdate.ParseFromNetworkMessage] Unknown creature update type '{Type}'.");
             }
@@ -72,12 +75,12 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
             } else if (Type == (byte)CreatureUpdateType.Vocation) {
                 message.Write(Vocation);
             } else if (Type == (byte)CreatureUpdateType.Icon) {
-                message.Write(ShowIcon);
-				if (ShowIcon) {
-					message.Write(Icon);
-					message.Write(Update);
-					message.Write(Counter);
-				}
+                message.Write((byte)Icons.Capacity);
+                foreach (var icon in Icons) {
+                    message.Write(icon.id);
+                    message.Write(icon.update);
+                    message.Write(icon.counter);
+                }
             }
         }
     }

@@ -13,7 +13,7 @@ namespace OXGaming.TibiaAPI.Store
 
         public byte HighlightState { get; set; }
 
-        public bool IsConfirmedPrice { get; set; }
+        public byte IsConfirmedPrice { get; set; }
         public bool IsDisabled { get; set; }
     }
 }

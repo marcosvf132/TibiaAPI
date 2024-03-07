@@ -6,7 +6,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
     {
         public uint Delay { get; set; }
 
-        public byte SpellId { get; set; }
+        public ushort SpellId { get; set; }
 
         public SpellDelay(Client client)
         {
@@ -16,7 +16,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
         public override void ParseFromNetworkMessage(NetworkMessage message)
         {
-            SpellId = message.ReadByte();
+            SpellId = message.ReadUInt16();
             Delay = message.ReadUInt32();
         }
 

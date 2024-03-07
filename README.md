@@ -128,6 +128,19 @@ You can override this by passing `-p/--port` on the command-line.
 
 Use `-r/--recording` to specify the recording you would like to watch.
 
+### LogReader
+The `LogReader` app can be used to read the client error output Base64 code.
+Parsing failures are helpful when looking for packet changes or trying to understand the structure of a new packet. Because of that, it's better to log as much data as possible and continue.
+The app output will specify the message's packet in order to specify which server packet we are dealing with and to understand and identify the error that caused the crash. On future updates will be implemented features to identify wrong ENUMS values to newer packets and scavange for items, outfits, effects and others assets informations.
+
+Pass `-l` or `--log` to specify which file the log is.
+The input log must be on Base64 code, can be a regular `.txt` file.
+e.g., `-l=log.txt`.
+
+Pass `-v` or `--version` to specify which version the log is from.
+The client version must be on the path `/ClientData/`.
+e.g., `-v=1330`.
+
 ## Donate
 The following data are from jo3bingham only, this API was created by him and he deserves all credits.
 If you enjoy the project, and like the work that has been put into it, feel free to donate. Donations aren't necessary, but anything is appreciated. Thanks!
@@ -141,3 +154,5 @@ Bitcoin: 1JWuyfeCV4SJtmDv16d3SadV4Nq8xtCB5v
 Ethereum: 0xaD4d3650A89a2786B60F86c2980d772aa412741F
 
 XRP: Address: rw2ciyaNshpHe7bCHo4bRWq6pqqynnWKQg | Tag: 1431977163
+
+If you want to chat you can find me on Discord: `marcosvf132`

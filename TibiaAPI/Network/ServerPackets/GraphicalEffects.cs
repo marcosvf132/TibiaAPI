@@ -1,14 +1,16 @@
 ﻿using System.Collections.Generic;
-
+using System.IO;
 using OXGaming.TibiaAPI.Constants;
 using OXGaming.TibiaAPI.Utilities;
+using System.Linq;
+using System;
 
 namespace OXGaming.TibiaAPI.Network.ServerPackets
 {
     public class GraphicalEffects : ServerPacket
     {
-        public List<(GraphicalEffectsType Type, byte TilesToMove, ushort Delay, byte Id, sbyte DistanceX, sbyte DistanceY)> Effects { get; } =
-            new List<(GraphicalEffectsType Type, byte TilesToMove, ushort Delay, byte Id, sbyte DistanceX, sbyte DistanceY)>();
+        public List<(GraphicalEffectsType Type, byte TilesToMove, ushort Delay, ushort Id, sbyte DistanceX, sbyte DistanceY)> Effects { get; } =
+            new List<(GraphicalEffectsType Type, byte TilesToMove, ushort Delay, ushort Id, sbyte DistanceX, sbyte DistanceY)>();
 
         public Position Position { get; set; }
 
@@ -41,15 +43,15 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 					var delay = message.ReadUInt16();
 					Effects.Add((type, 0, delay, 0, 0, 0));
 				} else if (type == GraphicalEffectsType.Effect) {
-					var effectId = message.ReadByte();
+					var effectId = message.ReadUInt16();
 					Effects.Add((type, 0, 0, effectId, 0, 0));
 				} else if (type == GraphicalEffectsType.MissileXY) {
-					var missileId = message.ReadByte();
+					var missileId = message.ReadUInt16();
 					var distanceAxisX = message.ReadSByte();
 					var distanceAxisY = message.ReadSByte();
 					Effects.Add((type, 0, 0, missileId, distanceAxisX, distanceAxisY));
 				} else if (type == GraphicalEffectsType.MissileYX) {
-					var missileId = message.ReadByte();
+					var missileId = message.ReadUInt16();
 					var distanceAxisY = message.ReadSByte();
 					var distanceAxisX = message.ReadSByte();
 					Effects.Add((type, 0, 0, missileId, distanceAxisX, distanceAxisY));

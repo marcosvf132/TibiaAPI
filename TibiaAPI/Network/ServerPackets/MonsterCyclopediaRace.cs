@@ -17,6 +17,8 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
         public string Name { get; set; }
 
+        public double Mitigation { get; set; }
+
         public uint Experience { get; set; }
         public uint Hitpoints { get; set; }
         public uint CharmRemovalCost { get; set; }
@@ -79,6 +81,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 				Experience = message.ReadUInt32();
 				Speed = message.ReadUInt16();
 				Armor = message.ReadUInt16();
+                Mitigation = message.ReadDouble();
 
 				if (CurrentKillStage > 2) {
 					Stats.Capacity = message.ReadByte();
@@ -139,6 +142,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 				message.Write(Experience);
 				message.Write(Speed);
 				message.Write(Armor);
+				message.Write(Mitigation);
 
 				if (CurrentKillStage > 2) {
 					count = Math.Min(Stats.Count, byte.MaxValue);

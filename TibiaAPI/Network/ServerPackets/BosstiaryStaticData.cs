@@ -5,7 +5,7 @@ using OXGaming.TibiaAPI.Constants;
 
 namespace OXGaming.TibiaAPI.Network.ServerPackets
 {
-    public class BosstiaryData : ServerPacket
+    public class BosstiaryStaticData : ServerPacket
     {
 
         #region Kills
@@ -35,10 +35,10 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
         public ushort NemesisExpertisePoints { get; set; }
         public ushort NemesisMasteryPoints { get; set; }
         #endregion
-        public BosstiaryData(Client client)
+        public BosstiaryStaticData(Client client)
         {
             Client = client;
-            PacketType = ServerPacketType.BosstiaryData;
+            PacketType = ServerPacketType.BosstiaryStaticData;
         }
 
         public override void ParseFromNetworkMessage(NetworkMessage message)
@@ -65,7 +65,7 @@ namespace OXGaming.TibiaAPI.Network.ServerPackets
 
         public override void AppendToNetworkMessage(NetworkMessage message)
         {
-            message.Write((byte)ServerPacketType.BosstiaryData);
+            message.Write((byte)ServerPacketType.BosstiaryStaticData);
             message.Write(BaneProwesKills);
             message.Write(BaneExpertiseKills);
             message.Write(BaneMasteryKills);
